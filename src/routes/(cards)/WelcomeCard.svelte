@@ -1,15 +1,16 @@
 <script lang="ts">
-    import FormCard, { type ActionProps } from "$lib/FormCard.svelte";
-    import { FlameKindling, Tent } from "@lucide/svelte";
+    import FormCard from "$lib/components/FormCard.svelte";
+    import type { CardProps } from "$lib/shared-types";
+    import { FlameKindling } from "@lucide/svelte";
 
-    let { card, active, visited, onnext }: ActionProps = $props();
+    let { formState, active, visited, onnext }: CardProps = $props();
 </script>
 
 <FormCard
     imageSrc="https://www.multipure.com/product_images/uploaded_images/family-double-piggyback-small.jpg"
     Icon={FlameKindling}
     title="2026 Church Weekend Away Registration"
-    bind:card
+    {formState}
     {active}
     {visited}
     {onnext}

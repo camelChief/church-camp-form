@@ -1,48 +1,54 @@
 <script lang="ts">
-    import type { ActionProps } from '$lib/FormCard.svelte';
-    import FormCard from '$lib/FormCard.svelte';
+    import FormCard from '$lib/components/FormCard.svelte';
+    import type { CardProps } from '$lib/shared-types';
     import { Contact } from '@lucide/svelte';
 
-    let { card, active, visited, onback, onnext }: ActionProps = $props();
-
-    let firstName = $state('');
-    let surname = $state('');
-    let email = $state('');
-    let mobile = $state('');
+    let {
+        formState = $bindable(),
+        active,
+        visited,
+        onback,
+        onnext,
+    }: CardProps = $props();
 </script>
 
 <FormCard
     Icon={Contact}
     title="Contact Details"
-    bind:card
+    {formState}
     {active}
     {visited}
     {onback}
     {onnext}
 >
     <div class="flex gap-2">
-        <div>
+        <div class="flex flex-col">
             <label for="first-name" class="label">First Name</label>
-            <input bind:value={firstName} id="first-name" type="text" class="input" />
+            <input
+                type="text"
+                id="first-name"
+                bind:value={formState.firstName}
+                class="input"
+            />
         </div>
-        <div>
+        <div class="flex flex-col">
             <label for="surname" class="label">Surname</label>
-            <input bind:value={surname} id="surname" type="text" class="input" />
+            <input
+                type="text"
+                id="surname"
+                bind:value={formState.surname}
+                class="input"
+            />
         </div>
     </div>
 
-    <div>
+    <div class="flex flex-col">
         <label for="email" class="label">Email Address</label>
-        <input bind:value={email} id="email" type="email" class="input w-full" />
+        <input type="email" id="email" bind:value={formState.emailAddress} class="input" />
     </div>
 
     <div class="flex flex-col">
         <label for="mobile" class="label">Mobile Number</label>
-        <input bind:value={mobile} id="mobile" type="tel" class="input" />
+        <input type="tel" id="mobile" bind:value={formState.mobileNumber} class="input" />
     </div>
-
-    <!-- <label class="label whitespace-normal mt-4">
-        <input type="checkbox" bind:checked={registerFamily} class="checkbox" />
-        I would like to register my spouse or family also.
-    </label> -->
 </FormCard>

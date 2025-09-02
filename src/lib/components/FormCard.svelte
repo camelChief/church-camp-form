@@ -1,22 +1,13 @@
 <script lang="ts">
-    import { Wrench, type IconProps } from "@lucide/svelte";
+    import { type IconProps } from "@lucide/svelte";
     import type { Component, Snippet } from "svelte";
-
-    export interface ActionProps {
-        card?: HTMLDivElement;
-        active: boolean;
-        visited: boolean;
-        onback?: () => void;
-        onnext?: () => void;
-        onsubmit?: () => void;
-    }
+    import type { CardProps } from "../shared-types";
 
     let {
         imageSrc,
         Icon,
         title,
         children,
-        card = $bindable(),
         active,
         visited,
         onback,
@@ -27,12 +18,11 @@
         Icon: Component<IconProps>,
         title: string,
         children?: Snippet,
-    } & ActionProps = $props();
+    } & CardProps = $props();
 </script>
 
 <div class="card-wrapper w-lg max-w-full" class:active class:visited>
     <div
-        bind:this={card}
         class="card w-lg max-w-full relative bg-base-100"
         class:shadow-md={active}
         class:bg-base-200={!active}
@@ -49,10 +39,9 @@
             <div class="step-bar"></div>
             <h2 class="card-title">{title}</h2>
             {#if active}
-            {@render children?.()}
+                {@render children?.()}
 
-            <!-- {#if active} -->
-                <div class="flex flex-row self-end gap-2 mt-8">
+                <div class="flex flex-row self-end gap-2 mt-4">
                     {#if onback}<button onclick={onback} class="btn">Back</button>{/if}
                     {#if onnext}<button onclick={onnext} class="btn btn-primary">Next</button>{/if}
                     {#if onsubmit}<button onclick={onsubmit} class="btn btn-primary">Submit</button>{/if}
