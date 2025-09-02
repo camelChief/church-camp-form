@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { ActionProps } from '$lib/FormCard.svelte';
     import FormCard from '$lib/FormCard.svelte';
+    import { Contact } from '@lucide/svelte';
 
     let { card, active, visited, onback, onnext }: ActionProps = $props();
 
@@ -11,6 +12,7 @@
 </script>
 
 <FormCard
+    Icon={Contact}
     title="Contact Details"
     bind:card
     {active}
@@ -20,23 +22,23 @@
 >
     <div class="flex gap-2">
         <div>
-            <label for="first-name" class="label">First Name *</label>
-            <input bind:value={firstName} id="first-name" type="text" class="input" disabled={!active} />
+            <label for="first-name" class="label">First Name</label>
+            <input bind:value={firstName} id="first-name" type="text" class="input" />
         </div>
         <div>
-            <label for="surname" class="label">Surname *</label>
-            <input bind:value={surname} id="surname" type="text" class="input" disabled={!active} />
+            <label for="surname" class="label">Surname</label>
+            <input bind:value={surname} id="surname" type="text" class="input" />
         </div>
     </div>
 
     <div>
         <label for="email" class="label">Email Address</label>
-        <input bind:value={email} id="email" type="email" class="input w-full" disabled={!active} />
+        <input bind:value={email} id="email" type="email" class="input w-full" />
     </div>
 
     <div class="flex flex-col">
-        <label for="mobile" class="label">Mobile Number *</label>
-        <input bind:value={mobile} id="mobile" type="tel" class="input" disabled={!active} />
+        <label for="mobile" class="label">Mobile Number</label>
+        <input bind:value={mobile} id="mobile" type="tel" class="input" />
     </div>
 
     <!-- <label class="label whitespace-normal mt-4">

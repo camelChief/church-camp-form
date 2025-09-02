@@ -1,5 +1,6 @@
 <script lang="ts">
     import FormCard, { type ActionProps } from "$lib/FormCard.svelte";
+    import { Tent } from "@lucide/svelte";
 
     let { card, active, visited, onback, onnext }: ActionProps = $props();
 
@@ -21,6 +22,7 @@
 </script>
 
 <FormCard
+    Icon={Tent}
     title="Accommodation"
     bind:card
     {active}
@@ -39,13 +41,13 @@
 
     <div class="flex flex-col">
         <label for="party-size" class="label">Party Size</label>
-        <input bind:value={partySize} id="party-size" type="number" class="input" min="1" max="13" disabled={!active} />
+        <input bind:value={partySize} id="party-size" type="number" class="input" min="1" max="13" />
         <p class="label mt-2 whitespace-normal">The number of people sharing your accommodation. Include yourself in the count, as well as your family members and any additional friends who will be bunking with you. Max 13.</p>
     </div>
 
     <div class="flex flex-col">
         <label for="accommodation-type" class="label">Accommodation Type</label>
-        <select bind:value={accommodationType} id="accommodation-type" class="select" disabled={!active || accomSelectDisabled}>
+        <select bind:value={accommodationType} id="accommodation-type" class="select" disabled={accomSelectDisabled}>
             <option value="powered-site">Powered Site</option>
             <option value="bunk-room" disabled={bunkOptionDisabled}>Bunk Room</option>
             <option value="cabin" disabled={cabinOptionDisabled}>Lakeside Cabin</option>
