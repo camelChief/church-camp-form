@@ -1,6 +1,6 @@
 <script lang="ts">
     import FormCard from '$lib/components/FormCard.svelte';
-    import type { CardProps, FamilyMember } from '$lib/shared-types';
+    import type { CardProps, FamilyMember } from '$lib/types';
     import { Plus, Trash, Users } from '@lucide/svelte';
 
     let {

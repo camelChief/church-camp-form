@@ -1,7 +1,7 @@
 <script lang="ts">
     import { type IconProps } from "@lucide/svelte";
     import type { Component, Snippet } from "svelte";
-    import type { CardProps } from "../shared-types";
+    import type { CardProps } from "../types";
 
     let {
         imageSrc,
@@ -92,7 +92,7 @@
     .step-bar {
         border-left: 2px dashed var(--color-base-content);
         height: 100%;
-        left: calc(-2rem - 1px);
+        left: -2rem;
         opacity: .1;
         position: absolute;
         top: 2.75rem;

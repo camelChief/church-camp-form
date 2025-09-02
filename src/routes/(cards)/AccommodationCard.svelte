@@ -1,6 +1,7 @@
 <script lang="ts">
     import FormCard from "$lib/components/FormCard.svelte";
-    import type { CardProps, Option } from "$lib/shared-types";
+    import { ACCOMMODATION_COSTS, BUNK_ROOM_BEDS, LAKESIDE_CABIN_BEDS } from "$lib/consts";
+    import type { CardProps } from "$lib/types";
     import { Tent } from "@lucide/svelte";
 
     let {
@@ -10,6 +11,18 @@
         onback,
         onnext,
     }: CardProps = $props();
+
+    let stayingNights = $derived.by(() => {
+        const arrivingFriday = formState.arrivalTime === 'friday evening';
+        const departingSunday =
+            formState.departureTime === 'sunday morning' ||
+            formState.departureTime === 'sunday afternoon';
+
+        let nightsCount = 0;
+        if (arrivingFriday) nightsCount += 1;
+        if (departingSunday) nightsCount += 1;
+        return nightsCount;
+    });
 
     let additionalAdults = $state('0');
     let additionalChildren = $state('0');
@@ -29,9 +42,39 @@
     });
 
     let partySize = $derived(adultsCount + childrenCount);
-    let cabinOptionDisabled = $derived(partySize > 7);
-    let bunkOptionDisabled = $derived(partySize > 9);
+    let cabinOptionDisabled = $derived(partySize > LAKESIDE_CABIN_BEDS);
+    let bunkOptionDisabled = $derived(partySize > BUNK_ROOM_BEDS);
     let displayAccommodationCosts = $derived(formState.preferredAccommodationType !== '');
+
+    let perNightCost = $derived.by(() => {
+        const accommodationType = formState.preferredAccommodationType;
+        const perNightCosts = ACCOMMODATION_COSTS.perNight;
+
+        let accomCostPerNight = 0;
+        switch (accommodationType) {
+            case 'powered site':
+                accomCostPerNight = perNightCosts.poweredSite;
+                break;
+            case 'bunk room':
+                accomCostPerNight = perNightCosts.bunkRoom;
+                break;
+            case 'lakeside cabin':
+                accomCostPerNight = perNightCosts.lakesideCabin;
+                break;
+            case 'family room':
+                accomCostPerNight = perNightCosts.familyRoom;
+                break;
+            default:
+                break;
+        }
+        
+        const adultPerNight = perNightCosts.additionalAdult;
+        const adultsPerNightCost = adultsCount > 2 ? (adultsCount - 2) * adultPerNight : 0;
+        const childPerNight = perNightCosts.additionalChild;
+        const childrenPerNightCost = childrenCount * childPerNight;
+
+        return accomCostPerNight + adultsPerNightCost + childrenPerNightCost;
+    });
 
     let totalCost = $derived.by(() => {
         let baseCost = 276;
@@ -76,10 +119,7 @@
     </div> -->
 
     <div class="flex flex-col gap-2">
-        <p class="label whitespace-normal">
-            {formState.familyMembers.length ? 'We' : 'I'}
-            will arrive and depart...
-        </p>
+        <p class="label whitespace-normal">Arrival/Departure</p>
 
         <label class="select">
             <span class="label">arrive</span>

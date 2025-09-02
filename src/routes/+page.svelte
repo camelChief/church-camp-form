@@ -1,16 +1,20 @@
 <script lang="ts">
-    import type { FormState } from "$lib/shared-types";
+    import type { FormState } from "$lib/types";
     import { tick } from "svelte";
     import AccommodationCard from "./(cards)/AccommodationCard.svelte";
     import ContactDetailsCard from "./(cards)/ContactDetailsCard.svelte";
     import FamilyDetailsCard from "./(cards)/FamilyDetailsCard.svelte";
     import WelcomeCard from "./(cards)/WelcomeCard.svelte";
+  import OtherCard from "./(cards)/OtherCard.svelte";
+  import NextStepsCard from "./(cards)/NextStepsCard.svelte";
 
     const steps = [
         WelcomeCard,
         ContactDetailsCard,
         FamilyDetailsCard,
         AccommodationCard,
+        OtherCard,
+        NextStepsCard,
     ];
     
     let stepIndex = $state(0);
@@ -30,8 +34,8 @@
         stepIndex = index;
         await tick();
         let scrollCatch = document.getElementsByClassName('scroll-catch')[index];
-        // scrollCatch.scrollIntoView({ behavior: 'smooth' });
-        scrollCatch.scrollIntoView();
+        scrollCatch.scrollIntoView({ behavior: 'smooth' });
+        // scrollCatch.scrollIntoView();
     }
 </script>
 

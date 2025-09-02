@@ -1,6 +1,6 @@
 <script lang="ts">
     import FormCard from "$lib/components/FormCard.svelte";
-    import type { CardProps } from "$lib/shared-types";
+    import type { CardProps } from "$lib/types";
     import { FlameKindling } from "@lucide/svelte";
 
     let { formState, active, visited, onnext }: CardProps = $props();
