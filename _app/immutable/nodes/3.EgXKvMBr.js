@@ -1,0 +1,1 @@
+import"../chunks/DsnmJJEf.js";import"../chunks/CUFjVivc.js";import{f as r,a as o}from"../chunks/D04MXYOx.js";var i=r('<div class="flex items-center justify-center h-screen"><p>Form submitted!</p></div>');function s(t){var e=i();o(t,e)}export{s as component};
