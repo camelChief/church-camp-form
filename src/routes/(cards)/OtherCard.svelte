@@ -20,4 +20,19 @@
     {visited}
     {onback}
     {onnext}
-></FormCard>
+>
+    <div class="flex flex-col">
+        <label for="dietary-requirements" class="label">Dietary Requirements</label>
+        <input
+            type="text"
+            id="dietary-requirements"
+            bind:value={formState.dietaryRequirements}
+            class="input"
+        />
+    </div>
+
+    <div class="flex flex-col">
+        <label for="notes" class="label">Anything else you'd like us to know?</label>
+        <textarea id="notes" bind:value={formState.notes} class="textarea w-full"></textarea>
+    </div>
+</FormCard>

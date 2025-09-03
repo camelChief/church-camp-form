@@ -26,11 +26,16 @@
 
     let additionalAdults = $state('0');
     let additionalChildren = $state('0');
+    let flatMates = $derived.by(() => {
+        const adults = parseInt(additionalAdults || '0');
+        const children = parseInt(additionalChildren || '0');
+        return (adults + children) > 0;
+    });
 
     let adultsCount = $derived.by(() => {
         const family = formState.familyMembers;
-        let adults = family.filter(m => m.ageGroup === 'adult').length;
-        adults += parseInt(additionalAdults || '0') + 1;
+        let adults = family.filter(m => m.ageGroup === 'adult').length + 1;
+        adults += parseInt(additionalAdults || '0');
         return adults;
     });
 
@@ -46,7 +51,7 @@
     let bunkOptionDisabled = $derived(partySize > BUNK_ROOM_BEDS);
     let displayAccommodationCosts = $derived(formState.preferredAccommodationType !== '');
 
-    let perNightCost = $derived.by(() => {
+    let accomCostPerNight = $derived.by(() => {
         const accommodationType = formState.preferredAccommodationType;
         const perNightCosts = ACCOMMODATION_COSTS.perNight;
 
@@ -68,6 +73,11 @@
                 break;
         }
         
+        return accomCostPerNight;
+    });
+
+    let totalCostPerNight = $derived.by(() => {
+        const perNightCosts = ACCOMMODATION_COSTS.perNight;
         const adultPerNight = perNightCosts.additionalAdult;
         const adultsPerNightCost = adultsCount > 2 ? (adultsCount - 2) * adultPerNight : 0;
         const childPerNight = perNightCosts.additionalChild;
@@ -76,12 +86,18 @@
         return accomCostPerNight + adultsPerNightCost + childrenPerNightCost;
     });
 
-    let totalCost = $derived.by(() => {
-        let baseCost = 276;
-        if (formState.preferredAccommodationType === 'bunk room') baseCost = 144;
-        else if (formState.preferredAccommodationType === 'powered site') baseCost = 78;
-        return (adultsCount - 2) * 30 + childrenCount * 20 + baseCost;
+    let myCostPerNight = $derived.by(() => {
+        if (!parseInt(additionalAdults || '0') && !parseInt(additionalChildren || '0')) return totalCostPerNight;
+        const a = (accomCostPerNight / partySize) * (formState.familyMembers.length + 1);
+        if (partySize <= 2) return a;
+        const b = ((adultsCount - 2) * ACCOMMODATION_COSTS.perNight.additionalAdult / adultsCount) * formState.familyMembers.filter(m => m.ageGroup === 'adult').length;
+        // const b = (formState.familyMembers.filter(m => m.ageGroup === 'adult').length ) * ACCOMMODATION_COSTS.perNight.additionalAdult;
+        const c = formState.familyMembers.filter(m => m.ageGroup === 'child').length * ACCOMMODATION_COSTS.perNight.additionalChild;
+        return a + b + c;
     });
+
+    let totalCost = $derived(totalCostPerNight * stayingNights);
+    let myTotalCost = $derived(myCostPerNight * stayingNights);
 
     let perPersonCost = $derived(Math.ceil(totalCost / partySize))
 </script>
@@ -107,16 +123,6 @@
         receive a cost estimate for your accommodation. A final total cost will
         be provided at the end of the form.
     </p>
-
-    <!-- <div class="flex flex-col gap-2 mb-2">
-        <p class="label whitespace-normal">I am paying for accommodation for...</p>
-        {#each payingForOptions as option}
-            <div class="flex gap-2">
-                <input type="radio" id={option.value} bind:group={payingFor} value={option.value} class="radio">
-                <label for={option.value} class="label">{option.label}</label>
-            </div>
-        {/each}
-    </div> -->
 
     <div class="flex flex-col gap-2">
         <p class="label whitespace-normal">Arrival/Departure</p>
@@ -191,22 +197,13 @@
     </div>
 
     {#if displayAccommodationCosts}
-        <div class="divider"></div>
-
-        <h2 class="card-title">Accommodation Cost Estimate</h2>
-
-        <div class="stats shadow">
-            <div class="stat">
-                <div class="stat-title">Total Cost</div>
-                <div class="stat-value text-primary">${totalCost}</div>
-                <div class="stat-desc whitespace-normal">For a {formState.preferredAccommodationType} for {partySize} people for the weekend</div>
-            </div>
-
-            <div class="stat">
-                <div class="stat-title">Cost Per Person</div>
-                <div class="stat-value text-secondary">${perPersonCost}</div>
-                <div class="stat-desc whitespace-normal">For adult groups splitting costs</div>
-            </div>
-        </div>
+        <p>
+            The total cost of accommodation will be
+            <strong>${totalCost}</strong>. (${totalCostPerNight}/night)
+            {#if flatMates}
+                <br>Your share of that cost will be
+                <strong>${myTotalCost}</strong>. (${myCostPerNight}/night)
+            {/if}
+        </p>
     {/if}
 </FormCard>

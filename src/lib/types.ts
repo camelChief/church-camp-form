@@ -41,6 +41,14 @@ export interface FormState {
     departureTime: Departure;
     partySize: number;
     preferredAccommodationType: AccommodationType | '';
+    costs: {
+        accommodationTotal: number;
+        accommodationSplit: number;
+        sharedTotal: number;
+        grandTotal: number;
+    };
+    dietaryRequirements: string;
+    notes: string;
 }
 
 export interface Option {
