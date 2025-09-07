@@ -21,7 +21,7 @@
     {onback}
     {onnext}
 >
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-1">
         <label for="dietary-requirements" class="label">Dietary Requirements</label>
         <input
             type="text"
@@ -31,7 +31,7 @@
         />
     </div>
 
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-1">
         <label for="notes" class="label">Anything else you'd like us to know?</label>
         <textarea id="notes" bind:value={formState.notes} class="textarea w-full"></textarea>
     </div>

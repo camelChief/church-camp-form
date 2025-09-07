@@ -22,7 +22,7 @@
     {onnext}
 >
     <div class="flex gap-2">
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-1">
             <label for="first-name" class="label">First Name</label>
             <input
                 type="text"
@@ -31,7 +31,7 @@
                 class="input"
             />
         </div>
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-1">
             <label for="surname" class="label">Surname</label>
             <input
                 type="text"
@@ -42,12 +42,12 @@
         </div>
     </div>
 
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-1">
         <label for="email" class="label">Email Address</label>
         <input type="email" id="email" bind:value={formState.emailAddress} class="input" />
     </div>
 
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-1">
         <label for="mobile" class="label">Mobile Number</label>
         <input type="tel" id="mobile" bind:value={formState.mobileNumber} class="input" />
     </div>

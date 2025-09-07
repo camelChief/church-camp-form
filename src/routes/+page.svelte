@@ -27,8 +27,9 @@
         familyMembers: [],
         arrivalTime: 'friday evening',
         departureTime: 'sunday afternoon',
-        partySize: 0,
         preferredAccommodationType: '',
+        additionalAdults: 0,
+        additionalChildren: 0,
         costs: {
             accommodationTotal: 0,
             accommodationSplit: 0,
