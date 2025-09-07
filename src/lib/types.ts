@@ -39,7 +39,8 @@ export interface FormState {
     familyMembers: FamilyMember[];
     arrivalTime: Arrival;
     departureTime: Departure;
-    partySize: number;
+    additionalAdults: number | null;
+    additionalChildren: number | null;
     preferredAccommodationType: AccommodationType | '';
     costs: {
         accommodationTotal: number;
