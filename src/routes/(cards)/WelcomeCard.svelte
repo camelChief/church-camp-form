@@ -1,16 +1,15 @@
 <script lang="ts">
     import FormCard from "$lib/components/FormCard.svelte";
-    import type { CardProps } from "$lib/types";
+    import type { BaseCardProps } from "$lib/types";
     import { TentTree } from "@lucide/svelte";
 
-    let { formState, active, visited, onnext }: CardProps = $props();
+    let { active, visited, onnext }: BaseCardProps = $props();
 </script>
 
 <FormCard
     imageSrc="https://www.multipure.com/product_images/uploaded_images/family-double-piggyback-small.jpg"
     Icon={TentTree}
     title="2026 Church Weekend Away Registration"
-    {formState}
     {active}
     {visited}
     {onnext}

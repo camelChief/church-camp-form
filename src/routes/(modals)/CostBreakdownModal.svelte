@@ -1,5 +1,19 @@
 <script lang="ts">
-  import { X } from "@lucide/svelte";
+    import { RATES } from "$lib/consts";
+    import type { AccommodationCosts, FormState } from "$lib/types";
+    import { X } from "@lucide/svelte";
+
+    let {
+        formState,
+        accommodationCosts,
+    }: {
+        formState: FormState,
+        accommodationCosts: AccommodationCosts
+    } = $props();
+
+    let totalCosts = $derived(accommodationCosts!.total);
+    let myTotalCosts = $derived(accommodationCosts!.split);
+    const toCost = (cost: number): string => cost ? `$${cost}` : '-';
 </script>
 
 <dialog id="costBreakdownModal" class="modal">
@@ -34,35 +48,35 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Family Room</td>
-                        <td>$138</td>
+                        <td>{formState.preferredAccommodationType}</td>
+                        <td>{toCost(totalCosts.nightly.room)}</td>
                         <td>1</td>
-                        <td>$138</td>
-                        <td class="bg-primary/5">$138</td>
+                        <td>{toCost(totalCosts.nightly.room)}</td>
+                        <td class="bg-primary/5">{toCost(myTotalCosts.nightly.room)}</td>
                     </tr>
                     <tr>
                         <td>Extra Adult</td>
-                        <td>$15</td>
-                        <td>2</td>
-                        <td>$30</td>
-                        <td class="bg-primary/5">$15</td>
+                        <td>{toCost(RATES.nightly.additionalAdult)}</td>
+                        <td>{accommodationCosts!.additionalAdults || '-'}</td>
+                        <td>{toCost(totalCosts.nightly.additionalAdults)}</td>
+                        <td class="bg-primary/5">{toCost(myTotalCosts.nightly.additionalAdults)}</td>
                     </tr>
                     <tr>
                         <td>Extra Child</td>
-                        <td>$10</td>
-                        <td>3</td>
-                        <td>$30</td>
-                        <td class="bg-primary/5">-</td>
+                        <td>{toCost(RATES.nightly.additionalChild)}</td>
+                        <td>{accommodationCosts!.additionalChildren || '-'}</td>
+                        <td>{toCost(totalCosts.nightly.additionalChildren)}</td>
+                        <td class="bg-primary/5">{toCost(myTotalCosts.nightly.additionalChildren)}</td>
                     </tr>
                     <tr>
                         <th colspan="3">Per Night</th>
-                        <th>$198</th>
-                        <th class="bg-primary/5">$84</th>
+                        <th>{toCost(totalCosts.nightly.total)}</th>
+                        <th class="bg-primary/5">{toCost(myTotalCosts.nightly.total)}</th>
                     </tr>
                     <tr>
-                        <th colspan="3">Total (2 Nights)</th>
-                        <th>$396</th>
-                        <th class="bg-primary/5 border border-primary">$168</th>
+                        <th colspan="3">Total ({accommodationCosts!.nights} Night{accommodationCosts!.nights !== 1 ? 's' : ''})</th>
+                        <th>{toCost(totalCosts.total)}</th>
+                        <th class="bg-primary/5 border border-primary">{toCost(myTotalCosts.total)}</th>
                     </tr>
                     <tr class="bg-base-200">
                         <td colspan="5">

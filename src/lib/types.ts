@@ -2,28 +2,40 @@
 // alphabetical order
 
 export type AccommodationType =
-    'powered site' |
-    'bunk room' |
-    'lakeside cabin' |
-    'family room';
+    'Powered Site' |
+    'Bunk Room' |
+    'Lakeside Cabin' |
+    'Family Room';
 
-export type Arrival =
-    'friday evening' |
-    'saturday morning' |
-    'saturday afternoon';
+export type ArrivalTime =
+    'Friday Evening' |
+    'Saturday Morning' |
+    'Saturday Afternoon';
 
-export type Departure =
-    'saturday afternoon' |
-    'sunday morning' |
-    'sunday afternoon';
+export type DepartureTime =
+    'Saturday Afternoon' |
+    'Sunday Morning' |
+    'Sunday Afternoon';
 
-export interface CardProps {
-    formState: FormState;
+export interface AccommodationCosts {
+    nights: number;
+    additionalAdults: number;
+    additionalChildren: number;
+    total: CostBreakdown;
+    split: CostBreakdown;
+}
+
+export interface BaseCardProps {
     active: boolean;
     visited: boolean;
     onback?: () => void;
     onnext?: () => void;
     onsubmit?: () => void;
+}
+
+export interface CardProps extends BaseCardProps {
+    formState: FormState;
+    accommodationCosts?: AccommodationCosts;
 }
 
 export interface FamilyMember {
@@ -37,8 +49,8 @@ export interface FormState {
     emailAddress: string;
     mobileNumber: string;
     familyMembers: FamilyMember[];
-    arrivalTime: Arrival;
-    departureTime: Departure;
+    arrivalTime: ArrivalTime;
+    departureTime: DepartureTime;
     additionalAdults: number | null;
     additionalChildren: number | null;
     preferredAccommodationType: AccommodationType | '';
@@ -55,4 +67,14 @@ export interface FormState {
 export interface Option {
     value: string;
     label: string;
+}
+
+interface CostBreakdown {
+    nightly: {
+        room: number;
+        additionalAdults: number;
+        additionalChildren: number;
+        total: number; // total per night
+    };
+    total: number; // total for stay
 }

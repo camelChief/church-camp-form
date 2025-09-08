@@ -1,7 +1,7 @@
 <script lang="ts">
     import { type IconProps } from "@lucide/svelte";
     import type { Component, Snippet } from "svelte";
-    import type { CardProps } from "../types";
+    import type { BaseCardProps } from "../types";
 
     let {
         imageSrc,
@@ -18,7 +18,7 @@
         Icon: Component<IconProps>,
         title: string,
         children?: Snippet,
-    } & CardProps = $props();
+    } & BaseCardProps = $props();
 </script>
 
 <div class="card-wrapper w-lg max-w-full" class:active class:visited>

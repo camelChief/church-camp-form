@@ -1,5 +1,6 @@
 <script lang="ts">
-    import type { FormState } from "$lib/types";
+    import { goto } from "$app/navigation";
+    import type { AccommodationCosts, FormState } from "$lib/types";
     import { tick } from "svelte";
     import AccommodationCard from "./(cards)/AccommodationCard.svelte";
     import FamilyDetailsCard from "./(cards)/FamilyDetailsCard.svelte";
@@ -7,7 +8,6 @@
     import SummaryCard from "./(cards)/SummaryCard.svelte";
     import WelcomeCard from "./(cards)/WelcomeCard.svelte";
     import YourDetailsCard from "./(cards)/YourDetailsCard.svelte";
-  import { goto } from "$app/navigation";
 
     const steps = [
         WelcomeCard,
@@ -25,8 +25,8 @@
         emailAddress: '',
         mobileNumber: '',
         familyMembers: [],
-        arrivalTime: 'friday evening',
-        departureTime: 'sunday afternoon',
+        arrivalTime: 'Friday Evening',
+        departureTime: 'Sunday Afternoon',
         preferredAccommodationType: '',
         additionalAdults: 0,
         additionalChildren: 0,
@@ -38,6 +38,34 @@
         },
         dietaryRequirements: '',
         notes: '',
+    });
+
+    let accommodationCosts: AccommodationCosts = $state({
+        nights: 0,
+        additionalAdults: 0,
+        additionalChildren: 0,
+
+        total: {
+            nightly: {
+                room: 0,
+                additionalAdults: 0,
+                additionalChildren: 0,
+                total: 0,
+            },
+
+            total: 0,
+        },
+
+        split: {
+            nightly: {
+                room: 0,
+                additionalAdults: 0,
+                additionalChildren: 0,
+                total: 0,
+            },
+
+            total: 0,
+        },
     });
 
     const onback = () => goToStep(stepIndex - 1);
@@ -56,6 +84,7 @@
     {#each steps as Step, i}
         <Step
             bind:formState
+            bind:accommodationCosts
             active={i === stepIndex}
             visited={i < stepIndex}
             onback={i > 0 ? onback : undefined}

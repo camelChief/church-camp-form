@@ -1,12 +1,12 @@
 <script lang="ts">
     import FormCard from "$lib/components/FormCard.svelte";
-    import { ACCOMMODATION_COSTS, BUNK_ROOM_BEDS, LAKESIDE_CABIN_BEDS } from "$lib/consts";
+    import { ACCOMMODATION_TYPES, ARRIVAL_TIMES, DEPARTURE_TIMES, RATES } from "$lib/consts";
     import type { CardProps } from "$lib/types";
-    import { toCamelCase } from "$lib/utils";
     import { Tent } from "@lucide/svelte";
 
     let {
         formState = $bindable(),
+        accommodationCosts = $bindable(),
         active,
         visited,
         onback,
@@ -15,10 +15,10 @@
 
     // the number of nights the user is staying
     let nightsCount = $derived.by(() => {
-        const arrivingFriday = formState.arrivalTime === 'friday evening';
+        const arrivingFriday = formState.arrivalTime === 'Friday Evening';
         const departingSunday =
-            formState.departureTime === 'sunday morning' ||
-            formState.departureTime === 'sunday afternoon';
+            formState.departureTime === 'Sunday Morning' ||
+            formState.departureTime === 'Sunday Afternoon';
 
         let nightsCount = 0;
         if (arrivingFriday) nightsCount += 1;
@@ -26,95 +26,125 @@
         return nightsCount;
     });
 
-    // whether the user is sharing their accommodation with others
-    let bunkmates = $derived.by(() => {
-        const adults = formState.additionalAdults || 0;
-        const children = formState.additionalChildren || 0;
-        return (adults + children) > 0;
+    // party size and restrictions
+    let partySize = $state(1);
+    let bunkmates = $state(false);
+    let accommodationOptionsHidden = $derived.by(() => {
+        const roomSizes = ACCOMMODATION_TYPES.map(t => t.sleeps);
+        return partySize > Math.min(...roomSizes);
     });
 
-    // the total number of adults
-    let adultsCount = $derived.by(() => {
-        const family = formState.familyMembers;
-        let adults = family.filter(m => m.ageGroup === 'adult').length + 1;
-        adults += formState.additionalAdults || 0;
-        return adults;
-    });
+    function calculateCosts(): void {
+        if (!formState.preferredAccommodationType) {
+            resetCosts();
+            return;
+        }
 
-    // the total number of children
-    let childrenCount = $derived.by(() => {
-        const family = formState.familyMembers;
-        let children = family.filter(m => m.ageGroup === 'child').length;
-        children += formState.additionalChildren || 0;
-        return children;
-    });
+        // setup
+        // get values to update
+        const nightlyRates = accommodationCosts!.total.nightly;
+        const myNightlyRates = accommodationCosts!.split.nightly;
 
-    // show or hide accommodation types based on party size
-    let partySize = $derived(adultsCount + childrenCount);
-    let cabinOptionDisabled = $derived(partySize > LAKESIDE_CABIN_BEDS);
-    let bunkOptionDisabled = $derived(partySize > BUNK_ROOM_BEDS);
+        // get accommodation details
+        const accommodation = ACCOMMODATION_TYPES.find(
+            t => t.name === formState.preferredAccommodationType);
 
-    // cost of accommodation per night
-    let accomCostPerNight = $derived.by(() => {
-        const perNightCosts = ACCOMMODATION_COSTS.perNight;
-        const accommodationType = formState.preferredAccommodationType;
-        const accomKey = toCamelCase(accommodationType) as keyof typeof perNightCosts;
-        return perNightCosts[accomKey];
-    });
-
-    // cost per night for all occupants
-    let costPerNight = $derived.by(() => {
-        const perNightCosts = ACCOMMODATION_COSTS.perNight;
-        const adultPerNightCost = perNightCosts.additionalAdult;
-        const childPerNightCost = perNightCosts.additionalChild;
-        const party = Array.from({ length: adultsCount }, () => "adult")
-            .concat(Array.from({ length: childrenCount }, () => "child"));
-
-        let costPerNight = accomCostPerNight;
-        if (party.length <= 2) return costPerNight;
-
-        party
-            .slice(2)
-            .forEach(member => {
-                if (member === 'adult') costPerNight += adultPerNightCost;
-                else if (member === 'child') costPerNight += childPerNightCost;
-            });
-
-        return costPerNight;
-    });
-
-    // cost per night for the user
-    let myCostPerNight = $derived.by(() => {
-        const perNightCosts = ACCOMMODATION_COSTS.perNight;
-        const adultPerNightCost = perNightCosts.additionalAdult;
-        const childPerNightCost = perNightCosts.additionalChild;
-
-        const myAdultsCount = formState.familyMembers.filter(
-            m => m.ageGroup === 'adult'
-        ).length + 1;
-
+        // calculate party details
         const myChildrenCount = formState.familyMembers.filter(
-            m => m.ageGroup === 'child'
-        ).length;
+            m => m.ageGroup === 'child').length;
+        const myAdultsCount = formState.familyMembers.length - myChildrenCount + 1;
+        let childrenCount = formState.additionalChildren || 0;
+        let adultsCount = formState.additionalAdults || 0;
+        bunkmates = (adultsCount + childrenCount) > 0;
 
-        let costPerNight = accomCostPerNight;
-        const additionalAdults = adultsCount - 2;
-        if (additionalAdults > 0)
-            costPerNight += additionalAdults * adultPerNightCost;
-        costPerNight = costPerNight / adultsCount * myAdultsCount;
-        costPerNight += myChildrenCount * childPerNightCost;
-        return Math.ceil(costPerNight);
-    });
+        adultsCount += myAdultsCount;
+        childrenCount += myChildrenCount;
+        partySize = adultsCount + childrenCount;
 
-    // total costs
-    let totalCost = $derived(costPerNight * nightsCount);
-    let myTotalCost = $derived(myCostPerNight * nightsCount);
+        // calculate additional occupants (beyond 2)
+        let additionalAdultsCount = adultsCount;
+        let additionalChildrenCount = childrenCount;
+        for (let i = 0; i < 2; i++) {
+            if (additionalAdultsCount > 0) additionalAdultsCount--;
+            else if (additionalChildrenCount > 0) additionalChildrenCount--;
+        }
+
+        // calculate nightly rates
+        // nightly room rate
+        nightlyRates.room = accommodation!.rate;
+        myNightlyRates.room = accommodation!.rate;
+
+        // nightly room rate for user if splitting
+        if (bunkmates) {
+            const perAdultRate = nightlyRates.room / adultsCount;
+            myNightlyRates.room = Math.ceil(perAdultRate * myAdultsCount);
+        }
+
+        // nightly additional occupants rates
+        accommodationCosts!.nights = nightsCount;
+        accommodationCosts!.additionalAdults = additionalAdultsCount;
+        accommodationCosts!.additionalChildren = additionalChildrenCount;
+        nightlyRates.additionalAdults = additionalAdultsCount * RATES.nightly.additionalAdult;
+        nightlyRates.additionalChildren = additionalChildrenCount * RATES.nightly.additionalChild;
+        myNightlyRates.additionalAdults = nightlyRates.additionalAdults;
+        myNightlyRates.additionalChildren = nightlyRates.additionalChildren;
+
+        // nightly additional occupants rates for user if splitting
+        if (bunkmates) {
+            if (nightlyRates.additionalAdults) {
+                const perAdult = nightlyRates.additionalAdults / adultsCount;
+                myNightlyRates.additionalAdults = Math.ceil(perAdult * myAdultsCount);
+            }
+
+            if (nightlyRates.additionalChildren && childrenCount) {
+                const perChild = nightlyRates.additionalChildren / childrenCount;
+                myNightlyRates.additionalChildren = Math.ceil(perChild * myChildrenCount);
+            }
+        }
+
+        // nightly rate
+        nightlyRates.total =
+            nightlyRates.room +
+            nightlyRates.additionalAdults +
+            nightlyRates.additionalChildren;
+
+        // nightly rate for user
+        myNightlyRates.total =
+            myNightlyRates.room +
+            myNightlyRates.additionalAdults +
+            myNightlyRates.additionalChildren;
+
+        // total costs
+        accommodationCosts!.total.total = nightlyRates.total * nightsCount;
+        accommodationCosts!.split.total = myNightlyRates.total * nightsCount;
+    }
+
+    function resetCosts(): void {
+        accommodationCosts!.total = {
+            nightly: {
+                room: 0,
+                additionalAdults: 0,
+                additionalChildren: 0,
+                total: 0,
+            },
+            total: 0,
+        };
+
+        accommodationCosts!.split = {
+            nightly: {
+                room: 0,
+                additionalAdults: 0,
+                additionalChildren: 0,
+                total: 0,
+            },
+            total: 0,
+        };
+    }
 </script>
 
 <FormCard
     Icon={Tent}
     title="Accommodation"
-    {formState}
     {active}
     {visited}
     {onback}
@@ -145,20 +175,29 @@
 
         <label class="select mb-1">
             <span class="label">arrive</span>
-            <select id="arrival-time" bind:value={formState.arrivalTime} class="select">
-                <option value="friday evening">Friday Evening</option>
-                <option value="saturday morning">Saturday Morning</option>
-                <option value="saturday afternoon">Saturday Afternoon</option>
+            <select
+                id="arrival-time"
+                bind:value={formState.arrivalTime}
+                onchange={() => calculateCosts()}
+                class="select"
+            >
+                {#each ARRIVAL_TIMES as time}
+                    <option value={time}>{time}</option>
+                {/each}
             </select>
         </label>
 
         <label class="select">
             <span class="label">depart</span>
-            <select id="departure-time" bind:value={formState.departureTime} class="select">
-                <option value="default" disabled>Departing</option>
-                <option value="saturday afternoon">Saturday Afternoon</option>
-                <option value="sunday morning">Sunday Morning</option>
-                <option value="sunday afternoon">Sunday Afternoon</option>
+            <select
+                id="departure-time"
+                bind:value={formState.departureTime}
+                onchange={() => calculateCosts()}
+                class="select"
+            >
+                {#each DEPARTURE_TIMES as time}
+                    <option value={time}>{time}</option>
+                {/each}
             </select>
         </label>
     </div>
@@ -178,6 +217,7 @@
                         () => formState.additionalAdults?.toString() || '',
                         (v) => formState.additionalAdults = v ? +v : null
                     }
+                    oninput={() => calculateCosts()}
                 >
                 <span class="label">adults</span>
             </label>
@@ -190,6 +230,7 @@
                         () => formState.additionalChildren?.toString() || '',
                         (v) => formState.additionalChildren = v ? +v : null
                     }
+                    oninput={() => calculateCosts()}
                 >
                 <span class="label">children</span>
             </label>
@@ -206,14 +247,23 @@
     <div class="flex flex-col gap-1">
         <label for="accommodation-type" class="label">Accommodation Type</label>
 
-        <select id="accommodation-type" bind:value={formState.preferredAccommodationType} class="select">
-            <option value="powered site">Powered Site</option>
-            <option value="bunk room" disabled={bunkOptionDisabled}>Bunk Room</option>
-            <option value="lakeside cabin" disabled={cabinOptionDisabled}>Lakeside Cabin</option>
-            <option value="family room">Family Room</option>
+        <select
+            id="accommodation-type"
+            bind:value={formState.preferredAccommodationType}
+            onchange={() => calculateCosts()}
+            class="select"
+        >
+            {#each ACCOMMODATION_TYPES as type}
+                <option value={type.name} disabled={type.sleeps < partySize}>
+                    {type.name}
+                </option>
+            {/each}
         </select>
 
-        <p class="label whitespace-normal" class:hidden={!cabinOptionDisabled}>
+        <p
+            class="label whitespace-normal"
+            class:hidden={!accommodationOptionsHidden}
+        >
             Some accommodation types are unavailable due to the size of your
             party.
         </p>
@@ -222,10 +272,12 @@
     {#if formState.preferredAccommodationType}
         <p class="mt-4">
             The total cost of accommodation will be
-            <strong>${totalCost}</strong>. (${costPerNight}/night)
+            <strong>${accommodationCosts!.total.total}</strong>.
+            (${accommodationCosts!.total.nightly.total}/night)
             {#if bunkmates}
                 <br>Your share of that cost will be
-                <strong>${myTotalCost}</strong>. (${myCostPerNight}/night)
+                <strong>${accommodationCosts!.split.total}</strong>.
+                (${accommodationCosts!.split.nightly.total}/night)
             {/if}
         </p>
     {/if}

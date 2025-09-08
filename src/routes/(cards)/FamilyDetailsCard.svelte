@@ -1,6 +1,6 @@
 <script lang="ts">
     import FormCard from '$lib/components/FormCard.svelte';
-    import type { CardProps, FamilyMember } from '$lib/types';
+    import type { CardProps } from '$lib/types';
     import { Plus, Trash, Users } from '@lucide/svelte';
 
     let {
@@ -23,7 +23,6 @@
 <FormCard
     Icon={Users}
     title="Family Details"
-    {formState}
     {active}
     {visited}
     {onback}
@@ -85,32 +84,4 @@
             </tr>
         </tbody>
     </table>
-    
-    <!-- {#each family as _, i}
-        <div class="flex flex-col">
-            <div class="flex gap-2">
-                <input
-                    type="text"
-                    id="family-member-{i}-name"
-                    placeholder="First Name"
-                    bind:value={family[i]}
-                    class="input grow"
-                />
-                <select id="family-member-{i}-status" class="select shrink">
-                    <option value="adult">Adult</option>
-                    <option value="child">Child (Under 18)</option>
-                </select>
-                <button
-                    onclick={() => removeFamilyMember(i)}
-                    class="btn btn-error btn-square">
-                    <Trash size={16} />
-                </button>
-            </div>
-        </div>
-    {/each}
-
-    <button
-        onclick={addFamilyMember}
-        class="btn btn-success btn-outline self-end"
-    >Add Family Member</button> -->
 </FormCard>
