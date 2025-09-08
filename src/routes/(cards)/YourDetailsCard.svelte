@@ -15,7 +15,6 @@
 <FormCard
     Icon={Contact}
     title="Your Details"
-    {formState}
     {active}
     {visited}
     {onback}

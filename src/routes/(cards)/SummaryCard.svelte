@@ -1,11 +1,12 @@
 <script lang="ts">
     import FormCard from '$lib/components/FormCard.svelte';
     import type { CardProps } from '$lib/types';
-    import { ReceiptText, X } from '@lucide/svelte';
-  import CostBreakdownModal from '../CostBreakdownModal.svelte';
+    import { ReceiptText } from '@lucide/svelte';
+    import CostBreakdownModal from '../(modals)/CostBreakdownModal.svelte';
 
     let {
         formState = $bindable(),
+        accommodationCosts,
         active,
         visited,
         onback,
@@ -17,7 +18,6 @@
 <FormCard
     Icon={ReceiptText}
     title="Summary"
-    {formState}
     {active}
     {visited}
     {onback}
@@ -40,12 +40,12 @@
     </p>
 
     <p>
-        {#if formState.preferredAccommodationType !== 'powered site'}
+        {#if formState.preferredAccommodationType !== 'Powered Site'}
             Once everything is booked, we'll let you know what cabin/room
             number you'll be in.
         {/if}
         Can't wait to see you there!
     </p>
 
-    <CostBreakdownModal />
+    <CostBreakdownModal {formState} accommodationCosts={accommodationCosts!} />
 </FormCard>

@@ -15,7 +15,6 @@
 <FormCard
     Icon={Utensils}
     title="Other"
-    {formState}
     {active}
     {visited}
     {onback}
