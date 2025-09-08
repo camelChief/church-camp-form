@@ -3,6 +3,9 @@
 
 import type { AccommodationType, ArrivalTime, DepartureTime } from "./types";
 
+export const EXPECTED_PARTICIPANTS = 40;
+export const SATURDAY_DINNER_RATE = 5;
+
 export const ACCOMMODATION_TYPES: {
     name: AccommodationType;
     rate: number;

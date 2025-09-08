@@ -36,11 +36,7 @@ export interface BaseCardProps {
 export interface CardProps extends BaseCardProps {
     formState: FormState;
     accommodationCosts?: AccommodationCosts;
-}
-
-export interface FamilyMember {
-    name: string;
-    ageGroup: 'adult' | 'child';
+    calculateCosts?: () => void;
 }
 
 export interface FormState {
@@ -77,4 +73,9 @@ interface CostBreakdown {
         total: number; // total per night
     };
     total: number; // total for stay
+}
+
+interface FamilyMember {
+    name: string;
+    ageGroup: 'adult' | 'child';
 }

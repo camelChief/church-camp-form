@@ -5,6 +5,7 @@
 
     let {
         formState = $bindable(),
+        calculateCosts,
         active,
         visited,
         onback,
@@ -13,10 +14,12 @@
 
     function addFamilyMember() {
         formState.familyMembers.push({ name: '', ageGroup: 'adult' });
+        calculateCosts!();
     }
 
     function removeFamilyMember(index: number) {
         formState.familyMembers.splice(index, 1);
+        calculateCosts!();
     }
 </script>
 
@@ -56,6 +59,7 @@
                         <select
                             id="family-member-{i}-age"
                             bind:value={formState.familyMembers[i].ageGroup}
+                            onchange={() => calculateCosts!()}
                             class="select"
                         >
                             <option value="adult">Adult</option>

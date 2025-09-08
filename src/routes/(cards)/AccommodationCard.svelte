@@ -1,145 +1,32 @@
 <script lang="ts">
     import FormCard from "$lib/components/FormCard.svelte";
-    import { ACCOMMODATION_TYPES, ARRIVAL_TIMES, DEPARTURE_TIMES, RATES } from "$lib/consts";
+    import { ACCOMMODATION_TYPES, ARRIVAL_TIMES, DEPARTURE_TIMES, EXPECTED_PARTICIPANTS, RATES, SATURDAY_DINNER_RATE } from "$lib/consts";
     import type { CardProps } from "$lib/types";
     import { Tent } from "@lucide/svelte";
 
     let {
         formState = $bindable(),
-        accommodationCosts = $bindable(),
+        accommodationCosts,
+        calculateCosts,
         active,
         visited,
         onback,
         onnext,
     }: CardProps = $props();
 
-    // the number of nights the user is staying
-    let nightsCount = $derived.by(() => {
-        const arrivingFriday = formState.arrivalTime === 'Friday Evening';
-        const departingSunday =
-            formState.departureTime === 'Sunday Morning' ||
-            formState.departureTime === 'Sunday Afternoon';
-
-        let nightsCount = 0;
-        if (arrivingFriday) nightsCount += 1;
-        if (departingSunday) nightsCount += 1;
-        return nightsCount;
+    const bunkmates = $derived.by(() => {
+        return (formState.additionalAdults || 0) +
+            (formState.additionalChildren || 0);
     });
 
-    // party size and restrictions
-    let partySize = $state(1);
-    let bunkmates = $state(false);
-    let accommodationOptionsHidden = $derived.by(() => {
+    const partySize = $derived.by(() => {
+        return formState.familyMembers.length + 1 + bunkmates;
+    });
+
+    const accommodationOptionsHidden = $derived.by(() => {
         const roomSizes = ACCOMMODATION_TYPES.map(t => t.sleeps);
         return partySize > Math.min(...roomSizes);
     });
-
-    function calculateCosts(): void {
-        if (!formState.preferredAccommodationType) {
-            resetCosts();
-            return;
-        }
-
-        // setup
-        // get values to update
-        const nightlyRates = accommodationCosts!.total.nightly;
-        const myNightlyRates = accommodationCosts!.split.nightly;
-
-        // get accommodation details
-        const accommodation = ACCOMMODATION_TYPES.find(
-            t => t.name === formState.preferredAccommodationType);
-
-        // calculate party details
-        const myChildrenCount = formState.familyMembers.filter(
-            m => m.ageGroup === 'child').length;
-        const myAdultsCount = formState.familyMembers.length - myChildrenCount + 1;
-        let childrenCount = formState.additionalChildren || 0;
-        let adultsCount = formState.additionalAdults || 0;
-        bunkmates = (adultsCount + childrenCount) > 0;
-
-        adultsCount += myAdultsCount;
-        childrenCount += myChildrenCount;
-        partySize = adultsCount + childrenCount;
-
-        // calculate additional occupants (beyond 2)
-        let additionalAdultsCount = adultsCount;
-        let additionalChildrenCount = childrenCount;
-        for (let i = 0; i < 2; i++) {
-            if (additionalAdultsCount > 0) additionalAdultsCount--;
-            else if (additionalChildrenCount > 0) additionalChildrenCount--;
-        }
-
-        // calculate nightly rates
-        // nightly room rate
-        nightlyRates.room = accommodation!.rate;
-        myNightlyRates.room = accommodation!.rate;
-
-        // nightly room rate for user if splitting
-        if (bunkmates) {
-            const perAdultRate = nightlyRates.room / adultsCount;
-            myNightlyRates.room = Math.ceil(perAdultRate * myAdultsCount);
-        }
-
-        // nightly additional occupants rates
-        accommodationCosts!.nights = nightsCount;
-        accommodationCosts!.additionalAdults = additionalAdultsCount;
-        accommodationCosts!.additionalChildren = additionalChildrenCount;
-        nightlyRates.additionalAdults = additionalAdultsCount * RATES.nightly.additionalAdult;
-        nightlyRates.additionalChildren = additionalChildrenCount * RATES.nightly.additionalChild;
-        myNightlyRates.additionalAdults = nightlyRates.additionalAdults;
-        myNightlyRates.additionalChildren = nightlyRates.additionalChildren;
-
-        // nightly additional occupants rates for user if splitting
-        if (bunkmates) {
-            if (nightlyRates.additionalAdults) {
-                const perAdult = nightlyRates.additionalAdults / adultsCount;
-                myNightlyRates.additionalAdults = Math.ceil(perAdult * myAdultsCount);
-            }
-
-            if (nightlyRates.additionalChildren && childrenCount) {
-                const perChild = nightlyRates.additionalChildren / childrenCount;
-                myNightlyRates.additionalChildren = Math.ceil(perChild * myChildrenCount);
-            }
-        }
-
-        // nightly rate
-        nightlyRates.total =
-            nightlyRates.room +
-            nightlyRates.additionalAdults +
-            nightlyRates.additionalChildren;
-
-        // nightly rate for user
-        myNightlyRates.total =
-            myNightlyRates.room +
-            myNightlyRates.additionalAdults +
-            myNightlyRates.additionalChildren;
-
-        // total costs
-        accommodationCosts!.total.total = nightlyRates.total * nightsCount;
-        accommodationCosts!.split.total = myNightlyRates.total * nightsCount;
-    }
-
-    function resetCosts(): void {
-        accommodationCosts!.total = {
-            nightly: {
-                room: 0,
-                additionalAdults: 0,
-                additionalChildren: 0,
-                total: 0,
-            },
-            total: 0,
-        };
-
-        accommodationCosts!.split = {
-            nightly: {
-                room: 0,
-                additionalAdults: 0,
-                additionalChildren: 0,
-                total: 0,
-            },
-            total: 0,
-        };
-    }
 </script>
 
 <FormCard
@@ -178,7 +65,7 @@
             <select
                 id="arrival-time"
                 bind:value={formState.arrivalTime}
-                onchange={() => calculateCosts()}
+                onchange={() => calculateCosts!()}
                 class="select"
             >
                 {#each ARRIVAL_TIMES as time}
@@ -192,7 +79,7 @@
             <select
                 id="departure-time"
                 bind:value={formState.departureTime}
-                onchange={() => calculateCosts()}
+                onchange={() => calculateCosts!()}
                 class="select"
             >
                 {#each DEPARTURE_TIMES as time}
@@ -217,7 +104,7 @@
                         () => formState.additionalAdults?.toString() || '',
                         (v) => formState.additionalAdults = v ? +v : null
                     }
-                    oninput={() => calculateCosts()}
+                    oninput={() => calculateCosts!()}
                 >
                 <span class="label">adults</span>
             </label>
@@ -230,7 +117,7 @@
                         () => formState.additionalChildren?.toString() || '',
                         (v) => formState.additionalChildren = v ? +v : null
                     }
-                    oninput={() => calculateCosts()}
+                    oninput={() => calculateCosts!()}
                 >
                 <span class="label">children</span>
             </label>
@@ -250,7 +137,7 @@
         <select
             id="accommodation-type"
             bind:value={formState.preferredAccommodationType}
-            onchange={() => calculateCosts()}
+            onchange={() => calculateCosts!()}
             class="select"
         >
             {#each ACCOMMODATION_TYPES as type}
@@ -274,7 +161,7 @@
             The total cost of accommodation will be
             <strong>${accommodationCosts!.total.total}</strong>.
             (${accommodationCosts!.total.nightly.total}/night)
-            {#if bunkmates}
+            {#if bunkmates > 0}
                 <br>Your share of that cost will be
                 <strong>${accommodationCosts!.split.total}</strong>.
                 (${accommodationCosts!.split.nightly.total}/night)

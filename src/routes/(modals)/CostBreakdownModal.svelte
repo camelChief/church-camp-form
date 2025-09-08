@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { RATES } from "$lib/consts";
+    import { EXPECTED_PARTICIPANTS, RATES, SATURDAY_DINNER_RATE } from "$lib/consts";
     import type { AccommodationCosts, FormState } from "$lib/types";
     import { X } from "@lucide/svelte";
 
@@ -11,8 +11,13 @@
         accommodationCosts: AccommodationCosts
     } = $props();
 
-    let totalCosts = $derived(accommodationCosts!.total);
-    let myTotalCosts = $derived(accommodationCosts!.split);
+    const totalCosts = $derived(accommodationCosts!.total);
+    const myTotalCosts = $derived(accommodationCosts!.split);
+    const familySize = $derived(formState.familyMembers.length + 1);
+    const lakesideHallRate = $derived(RATES.nightly.lakesideHall * 2 / EXPECTED_PARTICIPANTS);
+    const lakesideHallTotal = $derived(lakesideHallRate * familySize);
+    const saturdayDinnerTotal = $derived(SATURDAY_DINNER_RATE * familySize);
+
     const toCost = (cost: number): string => cost ? `$${cost}` : '-';
 </script>
 
@@ -86,25 +91,33 @@
                     </tr>
                     <tr>
                         <td>Lakeside Hall</td>
-                        <td>$40</td>
-                        <td>1</td>
+                        <td>{toCost(lakesideHallRate)}</td>
+                        <td>{familySize}</td>
                         <td></td>
-                        <td class="bg-primary/5">$40</td>
+                        <td class="bg-primary/5">
+                            {toCost(lakesideHallTotal)}
+                        </td>
                     </tr>
                     <tr>
                         <td>Saturday Dinner</td>
-                        <td>$5</td>
-                        <td>2</td>
+                        <td>{toCost(SATURDAY_DINNER_RATE)}</td>
+                        <td>{familySize}</td>
                         <td></td>
-                        <td class="bg-primary/5">$10</td>
+                        <td class="bg-primary/5">
+                            {toCost(saturdayDinnerTotal)}
+                        </td>
                     </tr>
                     <tr>
                         <th colspan="4">Total</th>
-                        <th class="bg-primary/5 border border-primary">$50</th>
+                        <th class="bg-primary/5 border border-primary">
+                            {toCost(formState.costs.sharedTotal)}
+                        </th>
                     </tr>
                     <tr>
                         <th colspan="4">Grand Total</th>
-                        <th class="bg-primary border border-primary text-primary-content">$218</th>
+                        <th class="bg-primary border border-primary text-primary-content">
+                            {toCost(formState.costs.grandTotal)}
+                        </th>
                     </tr>
                 </tbody>
             </table>
