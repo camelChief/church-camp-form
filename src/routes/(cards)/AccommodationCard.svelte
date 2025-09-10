@@ -1,7 +1,8 @@
 <script lang="ts">
     import FormCard from "$lib/components/FormCard.svelte";
-    import { ACCOMMODATION_TYPES, ARRIVAL_TIMES, DEPARTURE_TIMES, EXPECTED_PARTICIPANTS, RATES, SATURDAY_DINNER_RATE } from "$lib/consts";
-    import type { CardProps } from "$lib/types";
+    import { ACCOMMODATION_TYPES, ARRIVAL_TIMES, DEPARTURE_TIMES } from "$lib/consts";
+    import type { CardProps, FormControl } from "$lib/types";
+    import { required } from "$lib/validators";
     import { Tent } from "@lucide/svelte";
 
     let {
@@ -27,11 +28,20 @@
         const roomSizes = ACCOMMODATION_TYPES.map(t => t.sleeps);
         return partySize > Math.min(...roomSizes);
     });
+
+    const formControls: { [id: string]: FormControl } = $state({
+        'accommodation-type': {
+            field: null,
+            type: 'select',
+            validators: [required],
+        },
+    });
 </script>
 
 <FormCard
     Icon={Tent}
     title="Accommodation"
+    controls={Object.values(formControls)}
     {active}
     {visited}
     {onback}
@@ -136,6 +146,7 @@
 
         <select
             id="accommodation-type"
+            bind:this={formControls['accommodation-type'].field}
             bind:value={formState.preferredAccommodationType}
             onchange={() => calculateCosts!()}
             class="select"

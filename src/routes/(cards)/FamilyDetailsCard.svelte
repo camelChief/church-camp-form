@@ -39,7 +39,7 @@
     <table class="table table-xs">
         <thead>
             <tr>
-                <th>First Name</th>
+                <th>Given Name</th>
                 <th>Age Group</th>
                 <th class="w-1/100"></th>
             </tr>

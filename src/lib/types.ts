@@ -17,6 +17,8 @@ export type DepartureTime =
     'Sunday Morning' |
     'Sunday Afternoon';
 
+export type Validator = (value: string) => string | null;
+
 export interface AccommodationCosts {
     nights: number;
     additionalAdults: number;
@@ -39,9 +41,17 @@ export interface CardProps extends BaseCardProps {
     calculateCosts?: () => void;
 }
 
+export interface FormControl {
+    field: HTMLInputElement | HTMLSelectElement | null;
+    type: 'input' | 'select';
+    validators: Validator[];
+    valid?: boolean;
+}
+
 export interface FormState {
-    firstName: string;
-    surname: string;
+    stepIndex: number;
+    givenName: string;
+    familyName: string;
     emailAddress: string;
     mobileNumber: string;
     familyMembers: FamilyMember[];

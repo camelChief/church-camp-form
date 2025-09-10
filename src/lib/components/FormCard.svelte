@@ -1,12 +1,15 @@
 <script lang="ts">
+    import { showToast } from "$lib/services/toasts.svelte";
     import { type IconProps } from "@lucide/svelte";
-    import type { Component, Snippet } from "svelte";
-    import type { BaseCardProps } from "../types";
+    import { type Component, type Snippet } from "svelte";
+    import type { Action } from "svelte/action";
+    import type { BaseCardProps, FormControl } from "../types";
 
     let {
         imageSrc,
         Icon,
         title,
+        controls,
         children,
         active,
         visited,
@@ -14,11 +17,85 @@
         onnext,
         onsubmit,
     }: {
-        imageSrc?: string,
-        Icon: Component<IconProps>,
-        title: string,
-        children?: Snippet,
+        imageSrc?: string;
+        Icon: Component<IconProps>;
+        title: string;
+        controls?: FormControl[];
+        children?: Snippet;
     } & BaseCardProps = $props();
+
+    function validateForm(): boolean {
+        if (!controls) return true;
+
+        let firstValidationError = '';
+        controls.forEach(control => {
+            const validationError = validateControl(control);
+            if (validationError && !firstValidationError) {
+                firstValidationError = validationError;
+            }
+        });
+
+        if (firstValidationError) {
+            showToast({ message: firstValidationError, type: 'warning' });
+            return false;
+        }
+
+        return true;
+    }
+
+    function validateControl(control: FormControl): string | null {
+        let errorClass: string;
+        switch (control.type) {
+            case 'input':
+                errorClass = 'input-error';
+                break;
+            case 'select':
+                errorClass = 'select-error';
+                break;
+            default:
+                throw new Error(`Unknown control type: ${control.type}`);
+        }
+
+        control.field!.classList.remove(errorClass);
+
+        for (const validator of control.validators) {
+            const validationError = validator(control.field!.value);
+            if (validationError) {
+                control.field!.classList.add(errorClass);
+                return validationError;
+            }
+        }
+
+        return null;
+    }
+
+    const onFormMount: Action = (_) => {
+        $effect(() => {
+            if (!controls) return;
+            const controller = new AbortController();
+
+            controls.forEach(control => {
+                switch (control.type) {
+                    case 'input':
+                        control.field!.addEventListener(
+                            'input',
+                            () => control.field!.classList.remove('input-error'),
+                            { signal: controller.signal },
+                        );
+                        break;
+                    case 'select':
+                        control.field!.addEventListener(
+                            'change',
+                            () => control.field!.classList.remove('select-error'),
+                            { signal: controller.signal },
+                        );
+                        break;
+                }
+            });
+
+            return () => controller.abort();
+        });
+    };
 </script>
 
 <div class="card-wrapper w-lg max-w-full" class:active class:visited>
@@ -40,11 +117,26 @@
             <h2 class="card-title">{title}</h2>
             {#if active}
                 {@render children?.()}
+                <div use:onFormMount></div>
 
                 <div class="flex flex-row self-end gap-2 mt-4">
-                    {#if onback}<button onclick={onback} class="btn">Back</button>{/if}
-                    {#if onnext}<button onclick={onnext} class="btn btn-primary">Next</button>{/if}
-                    {#if onsubmit}<button onclick={onsubmit} class="btn btn-primary">Submit</button>{/if}
+                    {#if onback}
+                        <button onclick={onback} class="btn">Back</button>
+                    {/if}
+
+                    {#if onnext}
+                        <button
+                            onclick={() => { if (validateForm()) onnext(); }}
+                            class="btn btn-primary"
+                        >Next</button>
+                    {/if}
+
+                    {#if onsubmit}
+                        <button
+                            onclick={() => { if (validateForm()) onsubmit(); }}
+                            class="btn btn-primary"
+                        >Submit</button>
+                    {/if}
                 </div>
             {/if}
         </div>
