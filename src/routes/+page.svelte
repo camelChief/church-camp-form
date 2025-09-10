@@ -19,10 +19,10 @@
         SummaryCard,
     ];
     
-    let stepIndex = $state(0);
     let formState: FormState = $state({
-        firstName: '',
-        surname: '',
+        stepIndex: 0,
+        givenName: '',
+        familyName: '',
         emailAddress: '',
         mobileNumber: '',
         familyMembers: [],
@@ -69,12 +69,12 @@
         },
     });
 
-    const onback = () => goToStep(stepIndex - 1);
-    const onnext = () => goToStep(stepIndex + 1);
+    const onback = () => goToStep(formState.stepIndex - 1);
+    const onnext = () => goToStep(formState.stepIndex + 1);
     const onsubmit = () => goto('/form-submitted');
 
     async function goToStep(index: number) {
-        stepIndex = index;
+        formState.stepIndex = index;
         await tick();
         let scrollCatch = document.getElementsByClassName('scroll-catch')[index];
         scrollCatch.scrollIntoView({ behavior: 'smooth' });
@@ -216,8 +216,8 @@
             bind:formState
             {accommodationCosts}
             {calculateCosts}
-            active={i === stepIndex}
-            visited={i < stepIndex}
+            active={i === formState.stepIndex}
+            visited={i < formState.stepIndex}
             onback={i > 0 ? onback : undefined}
             onnext={i < steps.length - 1 ? onnext : undefined}
             onsubmit={i === steps.length - 1 ? onsubmit : undefined}
