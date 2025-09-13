@@ -4,7 +4,7 @@
     import { Utensils } from '@lucide/svelte';
 
     let {
-        formState = $bindable(),
+        formValues = $bindable(),
         active,
         visited,
         onback,
@@ -25,13 +25,13 @@
         <input
             type="text"
             id="dietary-requirements"
-            bind:value={formState.dietaryRequirements}
+            bind:value={formValues.dietaryRequirements}
             class="input"
         />
     </div>
 
     <div class="flex flex-col gap-1">
         <label for="notes" class="label">Anything else you'd like us to know?</label>
-        <textarea id="notes" bind:value={formState.notes} class="textarea w-full"></textarea>
+        <textarea id="notes" bind:value={formValues.notes} class="textarea w-full"></textarea>
     </div>
 </FormCard>

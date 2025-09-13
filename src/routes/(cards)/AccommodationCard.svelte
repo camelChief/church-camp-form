@@ -6,7 +6,7 @@
     import { Tent } from "@lucide/svelte";
 
     let {
-        formState = $bindable(),
+        formValues = $bindable(),
         accommodationCosts,
         calculateCosts,
         active,
@@ -16,12 +16,12 @@
     }: CardProps = $props();
 
     const bunkmates = $derived.by(() => {
-        return (formState.additionalAdults || 0) +
-            (formState.additionalChildren || 0);
+        return (formValues.additionalAdults || 0) +
+            (formValues.additionalChildren || 0);
     });
 
     const partySize = $derived.by(() => {
-        return formState.familyMembers.length + 1 + bunkmates;
+        return formValues.familyMembers.length + 1 + bunkmates;
     });
 
     const accommodationOptionsHidden = $derived.by(() => {
@@ -74,7 +74,7 @@
             <span class="label">arrive</span>
             <select
                 id="arrival-time"
-                bind:value={formState.arrivalTime}
+                bind:value={formValues.arrivalTime}
                 onchange={() => calculateCosts!()}
                 class="select"
             >
@@ -88,7 +88,7 @@
             <span class="label">depart</span>
             <select
                 id="departure-time"
-                bind:value={formState.departureTime}
+                bind:value={formValues.departureTime}
                 onchange={() => calculateCosts!()}
                 class="select"
             >
@@ -101,7 +101,7 @@
     
     <div class="flex flex-col gap-1">
         <p class="label whitespace-normal">
-            {formState.familyMembers.length ? 'We' : 'I'}
+            {formValues.familyMembers.length ? 'We' : 'I'}
             will be bunking with...
         </p>
 
@@ -111,8 +111,8 @@
                     type="text"
                     id="adults-count"
                     bind:value={
-                        () => formState.additionalAdults?.toString() || '',
-                        (v) => formState.additionalAdults = v ? +v : null
+                        () => formValues.additionalAdults?.toString() || '',
+                        (v) => formValues.additionalAdults = v ? +v : null
                     }
                     oninput={() => calculateCosts!()}
                 >
@@ -124,8 +124,8 @@
                     type="text"
                     id="children-count"
                     bind:value={
-                        () => formState.additionalChildren?.toString() || '',
-                        (v) => formState.additionalChildren = v ? +v : null
+                        () => formValues.additionalChildren?.toString() || '',
+                        (v) => formValues.additionalChildren = v ? +v : null
                     }
                     oninput={() => calculateCosts!()}
                 >
@@ -136,7 +136,7 @@
         <p class="label whitespace-normal">
             Any additional families or individuals who will be sharing your
             accommodation with you. Exclude yourself
-            {formState.familyMembers.length ? 'and your family' : ''}
+            {formValues.familyMembers.length ? 'and your family' : ''}
             from the count.
         </p>
     </div>
@@ -147,7 +147,7 @@
         <select
             id="accommodation-type"
             bind:this={formControls['accommodation-type'].field}
-            bind:value={formState.preferredAccommodationType}
+            bind:value={formValues.preferredAccommodationType}
             onchange={() => calculateCosts!()}
             class="select"
         >
@@ -167,7 +167,7 @@
         </p>
     </div>
 
-    {#if formState.preferredAccommodationType}
+    {#if formValues.preferredAccommodationType}
         <p class="mt-4">
             The total cost of accommodation will be
             <strong>${accommodationCosts!.total.total}</strong>.

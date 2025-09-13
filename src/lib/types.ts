@@ -30,13 +30,15 @@ export interface AccommodationCosts {
 export interface BaseCardProps {
     active: boolean;
     visited: boolean;
+    formState?: FormState;
     onback?: () => void;
     onnext?: () => void;
     onsubmit?: () => void;
 }
 
 export interface CardProps extends BaseCardProps {
-    formState: FormState;
+    formValues: FormValues;
+    formState?: FormState;
     accommodationCosts?: AccommodationCosts;
     calculateCosts?: () => void;
 }
@@ -50,6 +52,10 @@ export interface FormControl {
 
 export interface FormState {
     stepIndex: number;
+    isLoading: boolean;
+}
+
+export interface FormValues {
     givenName: string;
     familyName: string;
     emailAddress: string;

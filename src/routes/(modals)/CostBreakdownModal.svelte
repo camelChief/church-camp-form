@@ -1,13 +1,13 @@
 <script lang="ts">
     import { EXPECTED_PARTICIPANTS, RATES, SATURDAY_DINNER_RATE } from "$lib/consts";
-    import type { AccommodationCosts, FormState } from "$lib/types";
+    import type { AccommodationCosts, FormValues } from "$lib/types";
     import { X } from "@lucide/svelte";
 
     let {
         formState,
         accommodationCosts,
     }: {
-        formState: FormState,
+        formState: FormValues,
         accommodationCosts: AccommodationCosts
     } = $props();
 

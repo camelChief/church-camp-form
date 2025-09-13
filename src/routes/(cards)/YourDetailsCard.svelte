@@ -5,7 +5,7 @@
     import { Contact } from '@lucide/svelte';
 
     let {
-        formState = $bindable(),
+        formValues = $bindable(),
         active,
         visited,
         onback,
@@ -52,7 +52,7 @@
                 type="text"
                 id="given-name"
                 bind:this={formControls['given-name'].field}
-                bind:value={formState.givenName}
+                bind:value={formValues.givenName}
                 autocomplete="given-name"
                 class="input"
             />
@@ -63,7 +63,7 @@
                 type="text"
                 id="family-name"
                 bind:this={formControls['family-name'].field}
-                bind:value={formState.familyName}
+                bind:value={formValues.familyName}
                 autocomplete="family-name"
                 class="input"
             />
@@ -76,7 +76,7 @@
             type="email"
             id="email-address"
             bind:this={formControls['email-address'].field}
-            bind:value={formState.emailAddress}
+            bind:value={formValues.emailAddress}
             autocomplete="email"
             class="input"
         />
@@ -88,7 +88,7 @@
             type="tel"
             id="mobile-number"
             bind:this={formControls['mobile-number'].field}
-            bind:value={formState.mobileNumber}
+            bind:value={formValues.mobileNumber}
             autocomplete="tel"
             class="input"
         />

@@ -15,6 +15,7 @@ const config = {
 			precompress: false,
 			strict: true
 		}),
+		appDir: 'internal',
 		paths: {
 			base: isProduction ? '/church-camp-form' : ''
 		}
