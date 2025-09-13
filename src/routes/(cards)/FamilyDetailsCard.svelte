@@ -4,7 +4,7 @@
     import { Plus, Trash, Users } from '@lucide/svelte';
 
     let {
-        formState = $bindable(),
+        formValues = $bindable(),
         calculateCosts,
         active,
         visited,
@@ -13,12 +13,12 @@
     }: CardProps = $props();
 
     function addFamilyMember() {
-        formState.familyMembers.push({ name: '', ageGroup: 'adult' });
+        formValues.familyMembers.push({ name: '', ageGroup: 'adult' });
         calculateCosts!();
     }
 
     function removeFamilyMember(index: number) {
-        formState.familyMembers.splice(index, 1);
+        formValues.familyMembers.splice(index, 1);
         calculateCosts!();
     }
 </script>
@@ -45,20 +45,20 @@
             </tr>
         </thead>
         <tbody>
-            {#each formState.familyMembers as _, i}
+            {#each formValues.familyMembers as _, i}
                 <tr>
                     <td>
                         <input
                             type="text"
                             id="family-member-{i}-name"
-                            bind:value={formState.familyMembers[i].name}
+                            bind:value={formValues.familyMembers[i].name}
                             class="input"
                         />
                     </td>
                     <td>
                         <select
                             id="family-member-{i}-age"
-                            bind:value={formState.familyMembers[i].ageGroup}
+                            bind:value={formValues.familyMembers[i].ageGroup}
                             onchange={() => calculateCosts!()}
                             class="select"
                         >

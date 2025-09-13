@@ -13,6 +13,7 @@
         children,
         active,
         visited,
+        formState,
         onback,
         onnext,
         onsubmit,
@@ -121,12 +122,17 @@
 
                 <div class="flex flex-row self-end gap-2 mt-4">
                     {#if onback}
-                        <button onclick={onback} class="btn">Back</button>
+                        <button
+                            onclick={onback}
+                            disabled={formState?.isLoading}
+                            class="btn"
+                        >Back</button>
                     {/if}
 
                     {#if onnext}
                         <button
                             onclick={() => { if (validateForm()) onnext(); }}
+                            disabled={formState?.isLoading}
                             class="btn btn-primary"
                         >Next</button>
                     {/if}
@@ -134,8 +140,15 @@
                     {#if onsubmit}
                         <button
                             onclick={() => { if (validateForm()) onsubmit(); }}
+                            disabled={formState?.isLoading}
                             class="btn btn-primary"
-                        >Submit</button>
+                        >
+                            {#if formState?.isLoading}
+                                <span class="loading loading-spinner"></span>
+                            {:else}
+                                Submit
+                            {/if}
+                        </button>
                     {/if}
                 </div>
             {/if}

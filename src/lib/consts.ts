@@ -3,6 +3,7 @@
 
 import type { AccommodationType, ArrivalTime, DepartureTime } from "./types";
 
+export const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNj6E14QaM9YhdqbNa5a_GMY65swriFMTY_edQZmq_RhZrpbO8AM4P4eQXWY6leGb1/exec';
 export const EXPECTED_PARTICIPANTS = 40;
 export const SATURDAY_DINNER_RATE = 5;
 

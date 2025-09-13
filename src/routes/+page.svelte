@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import { ACCOMMODATION_TYPES, EXPECTED_PARTICIPANTS, RATES, SATURDAY_DINNER_RATE } from "$lib/consts";
-    import type { AccommodationCosts, FormState } from "$lib/types";
+    import { ACCOMMODATION_TYPES, APPS_SCRIPT_URL, EXPECTED_PARTICIPANTS, RATES, SATURDAY_DINNER_RATE } from "$lib/consts";
+    import type { AccommodationCosts, FormState, FormValues } from "$lib/types";
     import { tick } from "svelte";
     import AccommodationCard from "./(cards)/AccommodationCard.svelte";
     import FamilyDetailsCard from "./(cards)/FamilyDetailsCard.svelte";
@@ -18,9 +18,13 @@
         OtherCard,
         SummaryCard,
     ];
-    
+
     let formState: FormState = $state({
         stepIndex: 0,
+        isLoading: false,
+    });
+    
+    let formValues: FormValues = $state({
         givenName: '',
         familyName: '',
         emailAddress: '',
@@ -71,7 +75,20 @@
 
     const onback = () => goToStep(formState.stepIndex - 1);
     const onnext = () => goToStep(formState.stepIndex + 1);
-    const onsubmit = () => goto('/form-submitted');
+    const onsubmit = async () => {
+        formState.isLoading = true;
+        await fetch(
+            APPS_SCRIPT_URL,
+            {
+                redirect: "follow",
+                method: "POST",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify($state.snapshot(formValues))
+            }
+        );
+        formState.isLoading = false;
+        goto('/form-submitted');
+    }
 
     async function goToStep(index: number) {
         formState.stepIndex = index;
@@ -81,7 +98,7 @@
     }
 
     function calculateCosts(): void {
-        if (!formState.preferredAccommodationType) {
+        if (!formValues.preferredAccommodationType) {
             resetCosts();
             return;
         }
@@ -94,14 +111,14 @@
 
         // get accommodation details
         const accommodation = ACCOMMODATION_TYPES.find(
-            t => t.name === formState.preferredAccommodationType);
+            t => t.name === formValues.preferredAccommodationType);
 
         // calculate party details
-        const myChildrenCount = formState.familyMembers.filter(
+        const myChildrenCount = formValues.familyMembers.filter(
             m => m.ageGroup === 'child').length;
-        const myAdultsCount = formState.familyMembers.length - myChildrenCount + 1;
-        let childrenCount = formState.additionalChildren || 0;
-        let adultsCount = formState.additionalAdults || 0;
+        const myAdultsCount = formValues.familyMembers.length - myChildrenCount + 1;
+        let childrenCount = formValues.additionalChildren || 0;
+        let adultsCount = formValues.additionalAdults || 0;
         const bunkmates = (adultsCount + childrenCount) > 0;
         adultsCount += myAdultsCount;
         childrenCount += myChildrenCount;
@@ -163,16 +180,16 @@
         accommodationCosts!.total.total = nightlyRates.total * nightsCount;
         accommodationCosts!.split.total = myNightlyRates.total * nightsCount;
 
-        formState.costs.accommodationTotal = accommodationCosts!.total.total;
-        formState.costs.accommodationSplit = accommodationCosts!.split.total;
-        formState.costs.sharedTotal =
+        formValues.costs.accommodationTotal = accommodationCosts!.total.total;
+        formValues.costs.accommodationSplit = accommodationCosts!.split.total;
+        formValues.costs.sharedTotal =
             (RATES.nightly.lakesideHall * 2 /
             EXPECTED_PARTICIPANTS +
             SATURDAY_DINNER_RATE) *
-            (formState.familyMembers.length + 1);
-        formState.costs.grandTotal =
-            formState.costs.accommodationSplit +
-            formState.costs.sharedTotal;
+            (formValues.familyMembers.length + 1);
+        formValues.costs.grandTotal =
+            formValues.costs.accommodationSplit +
+            formValues.costs.sharedTotal;
     }
 
     function resetCosts(): void {
@@ -198,10 +215,10 @@
     }
 
     function calculateNights(): number {
-        const arrivingFriday = formState.arrivalTime === 'Friday Evening';
+        const arrivingFriday = formValues.arrivalTime === 'Friday Evening';
         const departingSunday =
-            formState.departureTime === 'Sunday Morning' ||
-            formState.departureTime === 'Sunday Afternoon';
+            formValues.departureTime === 'Sunday Morning' ||
+            formValues.departureTime === 'Sunday Afternoon';
 
         let nightsCount = 0;
         if (arrivingFriday) nightsCount += 1;
@@ -213,7 +230,8 @@
 <div class="flex flex-col items-center gap-4 p-4">
     {#each steps as Step, i}
         <Step
-            bind:formState
+            bind:formValues={formValues}
+            {formState}
             {accommodationCosts}
             {calculateCosts}
             active={i === formState.stepIndex}
