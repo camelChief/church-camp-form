@@ -87,7 +87,6 @@
                 body: JSON.stringify($state.snapshot(formValues))
             }
         );
-        formState.isLoading = false;
         goto(resolve('/form-submitted'));
     }
 
