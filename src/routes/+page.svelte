@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { resolve } from '$app/paths';
     import { ACCOMMODATION_TYPES, APPS_SCRIPT_URL, EXPECTED_PARTICIPANTS, RATES, SATURDAY_DINNER_RATE } from "$lib/consts";
     import type { AccommodationCosts, FormState, FormValues } from "$lib/types";
     import { tick } from "svelte";
@@ -87,7 +88,7 @@
             }
         );
         formState.isLoading = false;
-        goto('/form-submitted');
+        goto(resolve('/form-submitted'));
     }
 
     async function goToStep(index: number) {
