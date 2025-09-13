@@ -1,7 +1,7 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
-const isProduction = process.env.NODE_ENV === 'production';
+const dev = process.argv.includes('dev');
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -17,7 +17,7 @@ const config = {
 		}),
 		appDir: 'internal',
 		paths: {
-			base: isProduction ? '/church-camp-form' : ''
+			base: dev ? '' : '/church-camp-form'
 		}
 	}
 };
