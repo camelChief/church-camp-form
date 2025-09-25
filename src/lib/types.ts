@@ -1,13 +1,6 @@
 // types then interfaces
 // alphabetical order
 
-export type AccommodationSharing =
-	| "By myself"
-	| "With my spouse/family"
-	| "With some friends"
-	| "With my spouse/family and some friends"
-	| "With others maybe?";
-
 export type AccommodationType =
 	| "Powered Site"
 	| "Bunk Room"
@@ -24,7 +17,11 @@ export type DepartureTime =
 	| "Sunday Morning"
 	| "Sunday Afternoon";
 
+export type PayingFor = "myself" | "spouse" | "family";
+
 export type Validator = (value: string) => string | null;
+
+export type SharingWith = "nobody" | "friends" | "anyone";
 
 export interface AccommodationCosts {
 	nights: number;
@@ -67,7 +64,8 @@ export interface FormValues {
 	familyName: string;
 	emailAddress: string;
 	mobileNumber: string;
-	accommodationSharing: AccommodationSharing | "";
+	payingFor: PayingFor | "";
+	sharingWith: SharingWith | "";
 	familyMembers: FamilyMember[];
 	arrivalTime: ArrivalTime;
 	departureTime: DepartureTime;
@@ -84,8 +82,8 @@ export interface FormValues {
 	notes: string;
 }
 
-export interface Option {
-	value: string;
+export interface Option<T> {
+	value: T;
 	label: string;
 }
 

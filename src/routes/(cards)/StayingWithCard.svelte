@@ -1,6 +1,10 @@
 <script lang="ts">
 	import FormCard from "$lib/components/FormCard.svelte";
-	import { ACCOMMODATION_TYPES } from "$lib/consts";
+	import {
+		ACCOMMODATION_TYPES,
+		PAYING_FOR_OPTIONS,
+		SHARING_WITH_OPTIONS,
+	} from "$lib/consts";
 	import type { CardProps, FormControl } from "$lib/types";
 	import { required } from "$lib/validators";
 	import { Tent } from "@lucide/svelte";
@@ -68,77 +72,52 @@
 	</p>
 
 	<div class="flex flex-col gap-2">
-		<p class="label">I will be staying...</p>
+		<p class="label">I am paying for accommodation for...</p>
 
-		<div class="flex gap-2">
-			<input
-				type="radio"
-				id="by-myself"
-				bind:group={formValues.accommodationSharing}
-				value="by-myself"
-				class="radio"
-			/>
-			<label for="by-myself">By myself</label>
-		</div>
-		<div class="flex gap-2">
-			<input
-				type="radio"
-				id="with-family"
-				bind:group={formValues.accommodationSharing}
-				value="with-family"
-				class="radio"
-			/>
-			<label for="with-family">With my spouse/family</label>
-		</div>
-		<div class="flex gap-2">
-			<input
-				type="radio"
-				id="with-friends"
-				bind:group={formValues.accommodationSharing}
-				value="with-friends"
-				class="radio"
-			/>
-			<div class="flex flex-col">
-				<label for="with-friends">With some friends</label>
-				<span class="label text-xs whitespace-normal"
-					>I've organised a group who I will share my accommodation with. I will
-					only be paying for myself.</span
-				>
+		{#each PAYING_FOR_OPTIONS as option}
+			<div class="flex gap-2">
+				<input
+					type="radio"
+					id="paying-for-{option.value}"
+					bind:group={formValues.payingFor}
+					value={option.value}
+					class="radio"
+				/>
+				<label for="paying-for-{option.value}">{option.label}</label>
 			</div>
-		</div>
-		<div class="flex gap-2">
-			<input
-				type="radio"
-				id="with-family-and-friends"
-				bind:group={formValues.accommodationSharing}
-				value="with-family-and0friends"
-				class="radio"
-			/>
-			<div class="flex flex-col">
-				<label for="with-family-and-friends"
-					>With my spouse/family and some friends</label
-				>
-				<span class="label text-xs whitespace-normal"
-					>I've organised a group who I will share my accommodation with. I will
-					only be paying for myself and my family.</span
-				>
+		{/each}
+	</div>
+
+	<div class="flex flex-col gap-2">
+		<p class="label">
+			{!formValues.payingFor || formValues.payingFor === "myself" ? "I" : "We"} will
+			be sharing {!formValues.payingFor || formValues.payingFor === "myself"
+				? "my"
+				: "our"} accommodation with...
+		</p>
+
+		{#each SHARING_WITH_OPTIONS as option}
+			<div class="flex gap-2">
+				<input
+					type="radio"
+					id="sharing-with-{option.value}"
+					bind:group={formValues.sharingWith}
+					value={option.value}
+					class="radio"
+				/>
+				<div class="flex flex-col">
+					<label for="sharing-with-{option.value}">{option.label}</label>
+					<span class="label text-xs whitespace-normal">
+						{#if option.value === "friends"}
+							I've organised a group of friends who I will be sharing my
+							accommodation with.
+						{:else if option.value === "anyone"}
+							I have not organised a group, but I am willing to share my
+							accommodation with others if needed.
+						{/if}
+					</span>
+				</div>
 			</div>
-		</div>
-		<div class="flex gap-2">
-			<input
-				type="radio"
-				id="with-others"
-				bind:group={formValues.accommodationSharing}
-				value="with-others"
-				class="radio"
-			/>
-			<div class="flex flex-col">
-				<label for="with-others">With others maybe?</label>
-				<span class="label text-xs whitespace-normal"
-					>I haven't organised a group, but I'm happy to share my accommodation.
-					I will only be paying for myself.</span
-				>
-			</div>
-		</div>
+		{/each}
 	</div>
 </FormCard>
