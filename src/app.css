@@ -2,10 +2,10 @@
 @plugin "daisyui";
 
 @font-face {
-    font-family: 'Funnel Sans';
-    src: url('/fonts/FunnelSans-VariableFont_wght.ttf');
+	font-family: "Funnel Sans";
+	src: url("/fonts/FunnelSans-VariableFont_wght.ttf");
 }
 
 * {
-    font-family: 'Funnel Sans', sans-serif;
+	font-family: "Funnel Sans", sans-serif;
 }

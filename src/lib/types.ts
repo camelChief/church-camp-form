@@ -2,104 +2,104 @@
 // alphabetical order
 
 export type AccommodationSharing =
-  'By myself' |
-  'With my spouse/family' |
-  'With some friends' |
-  'With my spouse/family and some friends' |
-  'With others maybe?';
+	| "By myself"
+	| "With my spouse/family"
+	| "With some friends"
+	| "With my spouse/family and some friends"
+	| "With others maybe?";
 
 export type AccommodationType =
-    'Powered Site' |
-    'Bunk Room' |
-    'Lakeside Cabin' |
-    'Family Room';
+	| "Powered Site"
+	| "Bunk Room"
+	| "Lakeside Cabin"
+	| "Family Room";
 
 export type ArrivalTime =
-    'Friday Evening' |
-    'Saturday Morning' |
-    'Saturday Afternoon';
+	| "Friday Evening"
+	| "Saturday Morning"
+	| "Saturday Afternoon";
 
 export type DepartureTime =
-    'Saturday Afternoon' |
-    'Sunday Morning' |
-    'Sunday Afternoon';
+	| "Saturday Afternoon"
+	| "Sunday Morning"
+	| "Sunday Afternoon";
 
 export type Validator = (value: string) => string | null;
 
 export interface AccommodationCosts {
-    nights: number;
-    additionalAdults: number;
-    additionalChildren: number;
-    total: CostBreakdown;
-    split: CostBreakdown;
+	nights: number;
+	additionalAdults: number;
+	additionalChildren: number;
+	total: CostBreakdown;
+	split: CostBreakdown;
 }
 
 export interface BaseCardProps {
-    active: boolean;
-    visited: boolean;
-    formState?: FormState;
-    onback?: () => void;
-    onnext?: () => void;
-    onsubmit?: () => void;
+	active: boolean;
+	visited: boolean;
+	formState?: FormState;
+	onback?: () => void;
+	onnext?: () => void;
+	onsubmit?: () => void;
 }
 
 export interface CardProps extends BaseCardProps {
-    formValues: FormValues;
-    formState?: FormState;
-    accommodationCosts?: AccommodationCosts;
-    calculateCosts?: () => void;
+	formValues: FormValues;
+	formState?: FormState;
+	accommodationCosts?: AccommodationCosts;
+	calculateCosts?: () => void;
 }
 
 export interface FormControl {
-    field: HTMLInputElement | HTMLSelectElement | null;
-    type: 'input' | 'select';
-    validators: Validator[];
-    valid?: boolean;
+	field: HTMLInputElement | HTMLSelectElement | null;
+	type: "input" | "select";
+	validators: Validator[];
+	valid?: boolean;
 }
 
 export interface FormState {
-    stepIndex: number;
-    isLoading: boolean;
+	stepIndex: number;
+	isLoading: boolean;
 }
 
 export interface FormValues {
-    givenName: string;
-    familyName: string;
-    emailAddress: string;
-    mobileNumber: string;
-  accommodationSharing: AccommodationSharing | '';
-    familyMembers: FamilyMember[];
-    arrivalTime: ArrivalTime;
-    departureTime: DepartureTime;
-    additionalAdults: number | null;
-    additionalChildren: number | null;
-    preferredAccommodationType: AccommodationType | '';
-    costs: {
-        accommodationTotal: number;
-        accommodationSplit: number;
-        sharedTotal: number;
-        grandTotal: number;
-    };
-    dietaryRequirements: string;
-    notes: string;
+	givenName: string;
+	familyName: string;
+	emailAddress: string;
+	mobileNumber: string;
+	accommodationSharing: AccommodationSharing | "";
+	familyMembers: FamilyMember[];
+	arrivalTime: ArrivalTime;
+	departureTime: DepartureTime;
+	additionalAdults: number | null;
+	additionalChildren: number | null;
+	preferredAccommodationType: AccommodationType | "";
+	costs: {
+		accommodationTotal: number;
+		accommodationSplit: number;
+		sharedTotal: number;
+		grandTotal: number;
+	};
+	dietaryRequirements: string;
+	notes: string;
 }
 
 export interface Option {
-    value: string;
-    label: string;
+	value: string;
+	label: string;
 }
 
 interface CostBreakdown {
-    nightly: {
-        room: number;
-        additionalAdults: number;
-        additionalChildren: number;
-        total: number; // total per night
-    };
-    total: number; // total for stay
+	nightly: {
+		room: number;
+		additionalAdults: number;
+		additionalChildren: number;
+		total: number; // total per night
+	};
+	total: number; // total for stay
 }
 
 interface FamilyMember {
-    name: string;
-    ageGroup: 'adult' | 'child';
+	name: string;
+	ageGroup: "adult" | "child";
 }
