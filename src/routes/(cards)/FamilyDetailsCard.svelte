@@ -33,7 +33,7 @@
 >
     <p class="mb-2">
         If you're bringing your family and would like to register them also,
-        you can include them here.
+        you can include them here. Use the + (plus) button below to add family members.
     </p>
 
     <table class="table table-xs">
@@ -41,7 +41,13 @@
             <tr>
                 <th>Given Name</th>
                 <th>Age Group</th>
-                <th class="w-1/100"></th>
+                <th class="w-1/100">
+                    <button
+                        onclick={addFamilyMember}
+                        class="btn btn-success btn-square btn-ghost">
+                        <Plus size={16} />
+                    </button>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -69,23 +75,19 @@
                     <td>
                         <button
                             onclick={() => removeFamilyMember(i)}
-                            class="btn btn-error btn-square">
+                            class="btn btn-error btn-square btn-ghost">
                             <Trash size={16} />
                         </button>
                     </td>
                 </tr>
             {/each}
-            <tr>
+            <!-- <tr>
                 <td></td>
                 <td></td>
                 <td>
-                    <button
-                        onclick={addFamilyMember}
-                        class="btn btn-success btn-square">
-                        <Plus size={16} />
-                    </button>
+
                 </td>
-            </tr>
+            </tr> -->
         </tbody>
     </table>
 </FormCard>

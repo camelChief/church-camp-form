@@ -6,14 +6,16 @@
     import { tick } from "svelte";
     import AccommodationCard from "./(cards)/AccommodationCard.svelte";
     import FamilyDetailsCard from "./(cards)/FamilyDetailsCard.svelte";
+    import MyDetailsCard from "./(cards)/MyDetailsCard.svelte";
     import OtherCard from "./(cards)/OtherCard.svelte";
+    import StayingWithCard from "./(cards)/StayingWithCard.svelte";
     import SummaryCard from "./(cards)/SummaryCard.svelte";
     import WelcomeCard from "./(cards)/WelcomeCard.svelte";
-    import YourDetailsCard from "./(cards)/YourDetailsCard.svelte";
 
     const steps = [
         WelcomeCard,
-        YourDetailsCard,
+        MyDetailsCard,
+        StayingWithCard,
         FamilyDetailsCard,
         AccommodationCard,
         OtherCard,
@@ -24,12 +26,13 @@
         stepIndex: 0,
         isLoading: false,
     });
-    
+
     let formValues: FormValues = $state({
         givenName: '',
         familyName: '',
         emailAddress: '',
         mobileNumber: '',
+        accommodationSharing: '',
         familyMembers: [],
         arrivalTime: 'Friday Evening',
         departureTime: 'Sunday Afternoon',

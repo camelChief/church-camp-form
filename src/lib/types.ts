@@ -1,6 +1,13 @@
 // types then interfaces
 // alphabetical order
 
+export type AccommodationSharing =
+  'By myself' |
+  'With my spouse/family' |
+  'With some friends' |
+  'With my spouse/family and some friends' |
+  'With others maybe?';
+
 export type AccommodationType =
     'Powered Site' |
     'Bunk Room' |
@@ -60,6 +67,7 @@ export interface FormValues {
     familyName: string;
     emailAddress: string;
     mobileNumber: string;
+  accommodationSharing: AccommodationSharing | '';
     familyMembers: FamilyMember[];
     arrivalTime: ArrivalTime;
     departureTime: DepartureTime;

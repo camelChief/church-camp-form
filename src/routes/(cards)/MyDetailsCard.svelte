@@ -38,7 +38,7 @@
 
 <FormCard
     Icon={Contact}
-    title="Your Details"
+    title="My Details"
     controls={Object.values(formControls)}
     {active}
     {visited}
