@@ -1,7 +1,7 @@
 <script lang="ts">
-	import FormCard from "$lib/components/FormCard.svelte";
-	import type { CardProps } from "$lib/types";
-	import { Plus, Trash, Users } from "@lucide/svelte";
+	import FormCard from '$lib/components/FormCard.svelte';
+	import type { CardProps } from '$lib/types';
+	import { Plus, Trash, Users } from '@lucide/svelte';
 
 	let {
 		formValues = $bindable(),
@@ -13,7 +13,7 @@
 	}: CardProps = $props();
 
 	function addFamilyMember() {
-		formValues.familyMembers.push({ name: "", ageGroup: "adult" });
+		formValues.familyMembers.push({ name: '', ageGroup: 'adult' });
 		calculateCosts!();
 	}
 
@@ -32,64 +32,49 @@
 	{onnext}
 >
 	<p class="mb-2">
-		If you're bringing your family and would like to register them also, you can
-		include them here. Use the + (plus) button below to add family members.
+		Add the details for your spouse/family here.<br />
+		Use the + (plus) button below to add family members.
 	</p>
 
-	<table class="table table-xs">
-		<thead>
-			<tr>
-				<th>Given Name</th>
-				<th>Age Group</th>
-				<th class="w-1/100">
-					<button
-						onclick={addFamilyMember}
-						class="btn btn-success btn-square btn-ghost"
+	<div class="flex flex-col items-end gap-2">
+		{#each formValues.familyMembers as _, i}
+			<div class="flex gap-2 items-end self-stretch">
+				<div class="flex flex-col gap-1 grow">
+					{#if i === 0}
+						<label for="family-member-{i}-name" class="label">Given Name</label>
+					{/if}
+					<input
+						type="text"
+						id="family-member-{i}-name"
+						bind:value={formValues.familyMembers[i].name}
+						class="input"
+					/>
+				</div>
+				<div class="flex flex-col gap-1">
+					{#if i === 0}
+						<label for="family-member-{i}-age" class="label">Age Group</label>
+					{/if}
+					<select
+						id="family-member-{i}-age"
+						bind:value={formValues.familyMembers[i].ageGroup}
+						onchange={() => calculateCosts!()}
+						class="select"
 					>
-						<Plus size={16} />
-					</button>
-				</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each formValues.familyMembers as _, i}
-				<tr>
-					<td>
-						<input
-							type="text"
-							id="family-member-{i}-name"
-							bind:value={formValues.familyMembers[i].name}
-							class="input"
-						/>
-					</td>
-					<td>
-						<select
-							id="family-member-{i}-age"
-							bind:value={formValues.familyMembers[i].ageGroup}
-							onchange={() => calculateCosts!()}
-							class="select"
-						>
-							<option value="adult">Adult</option>
-							<option value="child">Child (Under 18)</option>
-						</select>
-					</td>
-					<td>
-						<button
-							onclick={() => removeFamilyMember(i)}
-							class="btn btn-error btn-square btn-ghost"
-						>
-							<Trash size={16} />
-						</button>
-					</td>
-				</tr>
-			{/each}
-			<!-- <tr>
-                <td></td>
-                <td></td>
-                <td>
+						<option value="adult">Adult</option>
+						<option value="child">Child (Under 18)</option>
+					</select>
+				</div>
+				<button
+					onclick={() => removeFamilyMember(i)}
+					class="btn btn-error btn-square {i === 0 ? 'btn-disabled' : ''}"
+				>
+					<Trash size={16} />
+				</button>
+			</div>
+		{/each}
 
-                </td>
-            </tr> -->
-		</tbody>
-	</table>
+		<button onclick={addFamilyMember} class="btn btn-success btn-square">
+			<Plus size={16} />
+		</button>
+	</div>
 </FormCard>

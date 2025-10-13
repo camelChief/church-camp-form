@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { showToast } from "$lib/services/toasts.svelte";
-	import { type IconProps } from "@lucide/svelte";
-	import { type Component, type Snippet } from "svelte";
-	import type { Action } from "svelte/action";
-	import type { BaseCardProps, FormControl } from "../types";
+	import { showToast } from '$lib/services/toasts.svelte';
+	import { type IconProps } from '@lucide/svelte';
+	import { type Component, type Snippet } from 'svelte';
+	import type { Action } from 'svelte/action';
+	import type { BaseCardProps, FormControl } from '../types';
 
 	let {
 		imageSrc,
@@ -28,7 +28,7 @@
 	function validateForm(): boolean {
 		if (!controls) return true;
 
-		let firstValidationError = "";
+		let firstValidationError = '';
 		controls.forEach((control) => {
 			const validationError = validateControl(control);
 			if (validationError && !firstValidationError) {
@@ -37,7 +37,7 @@
 		});
 
 		if (firstValidationError) {
-			showToast({ message: firstValidationError, type: "warning" });
+			showToast({ message: firstValidationError, type: 'warning' });
 			return false;
 		}
 
@@ -45,24 +45,42 @@
 	}
 
 	function validateControl(control: FormControl): string | null {
+		let radioEls: HTMLInputElement[] = [];
+		if (control.type === 'radio') {
+			radioEls = Array.from(
+				control.field!.querySelectorAll('input[type="radio"]')
+			);
+		}
+
+		let value: string;
 		let errorClass: string;
 		switch (control.type) {
-			case "input":
-				errorClass = "input-error";
+			case 'input':
+				value = (control.field! as HTMLInputElement).value;
+				errorClass = 'input-error';
 				break;
-			case "select":
-				errorClass = "select-error";
+			case 'select':
+				value = (control.field! as HTMLSelectElement).value;
+				errorClass = 'select-error';
+				break;
+			case 'radio':
+				value = radioEls.find((r) => r.checked)?.value ?? '';
+				errorClass = 'radio-error';
 				break;
 			default:
 				throw new Error(`Unknown control type: ${control.type}`);
 		}
 
-		control.field!.classList.remove(errorClass);
+		control.type === 'radio'
+			? radioEls.forEach((r) => r.classList.remove('radio-error'))
+			: control.field!.classList.remove(errorClass);
 
 		for (const validator of control.validators) {
-			const validationError = validator(control.field!.value);
+			const validationError = validator(value);
 			if (validationError) {
-				control.field!.classList.add(errorClass);
+				control.type === 'radio'
+					? radioEls.forEach((r) => r.classList.add('radio-error'))
+					: control.field!.classList.add(errorClass);
 				return validationError;
 			}
 		}
@@ -77,20 +95,33 @@
 
 			controls.forEach((control) => {
 				switch (control.type) {
-					case "input":
+					case 'input':
 						control.field!.addEventListener(
-							"input",
-							() => control.field!.classList.remove("input-error"),
-							{ signal: controller.signal },
+							'input',
+							() => control.field!.classList.remove('input-error'),
+							{ signal: controller.signal }
 						);
 						break;
-					case "select":
+					case 'select':
 						control.field!.addEventListener(
-							"change",
-							() => control.field!.classList.remove("select-error"),
-							{ signal: controller.signal },
+							'change',
+							() => control.field!.classList.remove('select-error'),
+							{ signal: controller.signal }
 						);
 						break;
+					case 'radio':
+						const radioEls = Array.from(
+							control.field!.querySelectorAll('input[type="radio"]')
+						);
+
+						radioEls.forEach((r) =>
+							r.addEventListener(
+								'change',
+								() =>
+									radioEls.forEach((r) => r.classList.remove('radio-error')),
+								{ signal: controller.signal }
+							)
+						);
 				}
 			});
 
