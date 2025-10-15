@@ -36,9 +36,9 @@
 	</p>
 
 	<p>
-		Please pay this amount into the church account before [cut off date]. When
-		you submit this form an email will be sent to you with your total, the
-		church account details and more information about camp.
+		When you submit this form you will receive an email to confirm that you have
+		registered. It will also include your total, with instructions for how to
+		pay and more information about camp.
 	</p>
 
 	<p>

@@ -23,7 +23,7 @@ export const ACCOMMODATION_TYPES: {
 	{ name: 'Powered Site', rate: 39, sleeps: 20 },
 	{ name: 'Bunk Room', rate: 72, sleeps: 9 },
 	{ name: 'Lakeside Cabin', rate: 138, sleeps: 7 },
-	{ name: 'Family Room', rate: 138, sleeps: 13 },
+	{ name: 'Family Room (Unit)', rate: 138, sleeps: 13 },
 ];
 
 export const ARRIVAL_TIMES: ArrivalTime[] = [

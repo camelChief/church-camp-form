@@ -5,7 +5,7 @@ export type AccommodationType =
 	| 'Powered Site'
 	| 'Bunk Room'
 	| 'Lakeside Cabin'
-	| 'Family Room';
+	| 'Family Room (Unit)';
 
 export type ArrivalTime =
 	| 'Friday Evening'
