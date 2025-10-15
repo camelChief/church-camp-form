@@ -37,9 +37,25 @@
 
 	<p>
 		When you submit this form you will receive an email to confirm that you have
-		registered. It will also include your total, with instructions for how to
-		pay and more information about camp.
+		registered.
+
+		{#if formValues.sharingWith === 'anyone'}
+			It will also include more information about camp.
+		{:else}
+			It will also include your total, with instructions for how to pay and more
+			information about camp.
+		{/if}
 	</p>
+
+	{#if formValues.sharingWith === 'anyone'}
+		<p>
+			If someone else would like to share accommodation, we'll contact you to
+			arrange it. After registration closes, you'll receive another email with
+			your final total (if your have some bunkmates,
+			<strong>your costs will come down</strong>) and instructions for how to
+			pay.
+		</p>
+	{/if}
 
 	<p>
 		{#if formValues.preferredAccommodationType !== 'Powered Site'}
@@ -49,8 +65,5 @@
 		Can't wait to see you there!
 	</p>
 
-	<CostBreakdownModal
-		formState={formValues}
-		accommodationCosts={accommodationCosts!}
-	/>
+	<CostBreakdownModal {formValues} accommodationCosts={accommodationCosts!} />
 </FormCard>

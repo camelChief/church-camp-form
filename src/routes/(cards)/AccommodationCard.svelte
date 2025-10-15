@@ -7,7 +7,7 @@
 	} from '$lib/consts';
 	import type { CardProps, FormControl } from '$lib/types';
 	import { required } from '$lib/validators';
-	import { Tent } from '@lucide/svelte';
+	import { BadgeQuestionMark, Tent } from '@lucide/svelte';
 
 	let {
 		formValues = $bindable(),
@@ -52,13 +52,6 @@
 	{onback}
 	{onnext}
 >
-	<!-- <p>More information can be found on the <a href="https://www.campelim.org.au/accommodation-and-sites" target="_blank" class="link">Camp Elim website</a>, but the key differences between the accommodation types are:</p>
-    <ul class="list-disc pl-4">
-        <li><strong>Powered Site</strong> - campsite, shared camp bathroom + fridge</li>
-        <li><strong>Bunk Room</strong> - private bathroom, shared camp fridge, sleeps 9</li>
-        <li><strong>Lakeside Cabin</strong> - private kitchen, bathroom + living space, sleeps 7</li>
-        <li><strong>Family Room</strong> - private kitchenette, bathroom + living space, sleeps 13</li>
-    </ul> -->
 	<p class="mb-2">
 		Fill out the fields below to select your accommodation preference and
 		receive a cost estimate for your accommodation. Final costs will be provided
@@ -98,7 +91,36 @@
 	</div>
 
 	<div class="flex flex-col gap-1">
-		<label for="accommodation-type" class="label">Accommodation Type</label>
+		<div class="flex items-center gap-1">
+			<label for="accommodation-type" class="label">Accommodation Type</label>
+			<div class="tooltip">
+				<div class="tooltip-content text-left">
+					<p class="mb-2">
+						More information can be found on the Camp Elim website but the key
+						differences between the accommodation types are:
+					</p>
+
+					<ul class="list-disc pl-4">
+						<li class="mb-1">
+							<strong>Powered Site</strong> - campsite, shared camp bathroom + fridge
+						</li>
+						<li class="mb-1">
+							<strong>Bunk Room</strong> - private bathroom, shared camp fridge,
+							sleeps 9
+						</li>
+						<li class="mb-1">
+							<strong>Lakeside Cabin</strong> - private kitchen, bathroom + living
+							space, sleeps 7
+						</li>
+						<li>
+							<strong>Family Room (Unit)</strong> - private kitchenette, bathroom
+							+ living space, sleeps 13
+						</li>
+					</ul>
+				</div>
+				<BadgeQuestionMark size={16} />
+			</div>
+		</div>
 
 		<select
 			id="accommodation-type"

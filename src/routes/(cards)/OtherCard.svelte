@@ -26,7 +26,10 @@
 	<div class="flex flex-col gap-1">
 		<label for="notes" class="label">Anything else you'd like us to know?</label
 		>
-		<textarea id="notes" bind:value={formValues.notes} class="textarea w-full"
+		<textarea
+			id="notes"
+			bind:value={formValues.notes}
+			class="textarea w-full resize-none"
 		></textarea>
 	</div>
 </FormCard>
