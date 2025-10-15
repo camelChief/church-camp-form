@@ -1,7 +1,7 @@
 <script lang="ts">
-	import FormCard from "$lib/components/FormCard.svelte";
-	import type { CardProps } from "$lib/types";
-	import { Utensils } from "@lucide/svelte";
+	import FormCard from '$lib/components/FormCard.svelte';
+	import type { CardProps } from '$lib/types';
+	import { Utensils } from '@lucide/svelte';
 
 	let {
 		formValues = $bindable(),

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import FormCard from "$lib/components/FormCard.svelte";
-	import type { BaseCardProps } from "$lib/types";
-	import { TentTree } from "@lucide/svelte";
+	import FormCard from '$lib/components/FormCard.svelte';
+	import type { BaseCardProps } from '$lib/types';
+	import { TentTree } from '@lucide/svelte';
 
 	let { active, visited, onnext }: BaseCardProps = $props();
 </script>

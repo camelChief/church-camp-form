@@ -4,14 +4,14 @@ import {
 	OctagonX,
 	TriangleAlert,
 	type IconProps,
-} from "@lucide/svelte";
-import type { Component } from "svelte";
+} from '@lucide/svelte';
+import type { Component } from 'svelte';
 
 type Toast = {
 	id: number;
 	Icon: Component<IconProps>;
 	message: string;
-	type?: "info" | "success" | "warning" | "error";
+	type?: 'info' | 'success' | 'warning' | 'error';
 	duration?: number;
 };
 
@@ -19,20 +19,20 @@ let counter = 0;
 
 export const toasts: Toast[] = $state([]);
 
-export function showToast(options: Omit<Toast, "id" | "Icon">) {
+export function showToast(options: Omit<Toast, 'id' | 'Icon'>) {
 	const id = ++counter;
 	let Icon: Component<IconProps>;
 	switch (options.type) {
-		case "success":
+		case 'success':
 			Icon = CircleCheck;
 			break;
-		case "warning":
+		case 'warning':
 			Icon = TriangleAlert;
 			break;
-		case "error":
+		case 'error':
 			Icon = OctagonX;
 			break;
-		case "info":
+		case 'info':
 		default:
 			Icon = BadgeInfo;
 			break;

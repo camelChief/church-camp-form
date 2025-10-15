@@ -1,8 +1,8 @@
 <script lang="ts">
-	import FormCard from "$lib/components/FormCard.svelte";
-	import type { CardProps, FormControl } from "$lib/types";
-	import { emailAddress, mobileNumber, required } from "$lib/validators";
-	import { Contact } from "@lucide/svelte";
+	import FormCard from '$lib/components/FormCard.svelte';
+	import type { CardProps, FormControl } from '$lib/types';
+	import { emailAddress, mobileNumber, required } from '$lib/validators';
+	import { Contact } from '@lucide/svelte';
 
 	let {
 		formValues = $bindable(),
@@ -13,24 +13,24 @@
 	}: CardProps = $props();
 
 	const formControls: { [id: string]: FormControl } = $state({
-		"given-name": {
+		'given-name': {
 			field: null,
-			type: "input",
+			type: 'input',
 			validators: [required],
 		},
-		"family-name": {
+		'family-name': {
 			field: null,
-			type: "input",
+			type: 'input',
 			validators: [required],
 		},
-		"email-address": {
+		'email-address': {
 			field: null,
-			type: "input",
+			type: 'input',
 			validators: [required, emailAddress],
 		},
-		"mobile-number": {
+		'mobile-number': {
 			field: null,
-			type: "input",
+			type: 'input',
 			validators: [required, mobileNumber],
 		},
 	});
@@ -51,7 +51,7 @@
 			<input
 				type="text"
 				id="given-name"
-				bind:this={formControls["given-name"].field}
+				bind:this={formControls['given-name'].field}
 				bind:value={formValues.givenName}
 				autocomplete="given-name"
 				class="input"
@@ -62,7 +62,7 @@
 			<input
 				type="text"
 				id="family-name"
-				bind:this={formControls["family-name"].field}
+				bind:this={formControls['family-name'].field}
 				bind:value={formValues.familyName}
 				autocomplete="family-name"
 				class="input"
@@ -75,7 +75,7 @@
 		<input
 			type="email"
 			id="email-address"
-			bind:this={formControls["email-address"].field}
+			bind:this={formControls['email-address'].field}
 			bind:value={formValues.emailAddress}
 			autocomplete="email"
 			class="input"
@@ -87,7 +87,7 @@
 		<input
 			type="tel"
 			id="mobile-number"
-			bind:this={formControls["mobile-number"].field}
+			bind:this={formControls['mobile-number'].field}
 			bind:value={formValues.mobileNumber}
 			autocomplete="tel"
 			class="input"
