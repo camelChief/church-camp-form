@@ -1,4 +1,5 @@
 <script lang="ts">
+	import banner from '$lib/assets/form-banner-alt.jpg';
 	import FormCard from '$lib/components/FormCard.svelte';
 	import type { BaseCardProps } from '$lib/types';
 	import { TentTree } from '@lucide/svelte';
@@ -7,7 +8,7 @@
 </script>
 
 <FormCard
-	imageSrc="/form-banner-alt.jpg"
+	imageSrc={banner}
 	Icon={TentTree}
 	title="2026 Church Weekend Away Registration"
 	{active}
