@@ -70,8 +70,6 @@ export interface FormValues {
 	bunkmates: Bunkmate[];
 	arrivalTime: ArrivalTime;
 	departureTime: DepartureTime;
-	// additionalAdults: number | null;
-	// additionalChildren: number | null;
 	preferredAccommodationType: AccommodationType | '';
 	costs: {
 		accommodationTotal: number;
