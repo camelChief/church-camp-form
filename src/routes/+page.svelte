@@ -111,6 +111,7 @@
 			headers: { 'Content-Type': 'text/plain' },
 			body: JSON.stringify($state.snapshot(formValues)),
 		});
+
 		goto(resolve('/form-submitted'));
 	};
 

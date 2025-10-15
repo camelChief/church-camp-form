@@ -7,7 +7,7 @@
 </script>
 
 <FormCard
-	imageSrc="https://www.multipure.com/product_images/uploaded_images/family-double-piggyback-small.jpg"
+	imageSrc="/form-banner-alt.jpg"
 	Icon={TentTree}
 	title="2026 Church Weekend Away Registration"
 	{active}
