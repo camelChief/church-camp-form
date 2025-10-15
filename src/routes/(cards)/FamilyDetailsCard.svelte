@@ -1,6 +1,7 @@
 <script lang="ts">
 	import FormCard from '$lib/components/FormCard.svelte';
-	import type { CardProps } from '$lib/types';
+	import type { CardProps, FormControl } from '$lib/types';
+	import { required } from '$lib/validators';
 	import { Plus, Trash, Users } from '@lucide/svelte';
 
 	let {
@@ -12,12 +13,26 @@
 		onnext,
 	}: CardProps = $props();
 
+	const formControls: FormControl[] = $state(
+		formValues.familyMembers.map(() => ({
+			field: null,
+			type: 'input',
+			validators: [required],
+		}))
+	);
+
 	function addFamilyMember() {
+		formControls.push({
+			field: null,
+			type: 'input',
+			validators: [required],
+		});
 		formValues.familyMembers.push({ name: '', ageGroup: 'adult' });
 		calculateCosts!();
 	}
 
 	function removeFamilyMember(index: number) {
+		formControls.splice(index, 1);
 		formValues.familyMembers.splice(index, 1);
 		calculateCosts!();
 	}
@@ -26,6 +41,7 @@
 <FormCard
 	Icon={Users}
 	title="Family Details"
+	controls={formControls}
 	{active}
 	{visited}
 	{onback}
@@ -46,6 +62,7 @@
 					<input
 						type="text"
 						id="family-member-{i}-name"
+						bind:this={formControls[i].field}
 						bind:value={formValues.familyMembers[i].name}
 						class="input"
 					/>

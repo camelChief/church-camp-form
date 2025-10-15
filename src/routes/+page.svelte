@@ -11,13 +11,13 @@
 	import type { AccommodationCosts, FormState, FormValues } from '$lib/types';
 	import { tick } from 'svelte';
 	import AccommodationCard from './(cards)/AccommodationCard.svelte';
+	import BunkmatesDetailsCard from './(cards)/BunkmatesDetailsCard.svelte';
 	import FamilyDetailsCard from './(cards)/FamilyDetailsCard.svelte';
 	import MyDetailsCard from './(cards)/MyDetailsCard.svelte';
 	import OtherCard from './(cards)/OtherCard.svelte';
 	import StayingWithCard from './(cards)/StayingWithCard.svelte';
 	import SummaryCard from './(cards)/SummaryCard.svelte';
 	import WelcomeCard from './(cards)/WelcomeCard.svelte';
-	import BunkmatesDetailsCard from './(cards)/BunkmatesDetailsCard.svelte';
 
 	let formState: FormState = $state({
 		stepIndex: 0,
@@ -37,11 +37,15 @@
 				ageGroup: 'adult',
 			},
 		],
+		bunkmates: [
+			{
+				name: '',
+				ageGroup: 'adult',
+			},
+		],
 		arrivalTime: 'Friday Evening',
 		departureTime: 'Sunday Afternoon',
 		preferredAccommodationType: '',
-		additionalAdults: 0,
-		additionalChildren: 0,
 		costs: {
 			accommodationTotal: 0,
 			accommodationSplit: 0,
@@ -135,13 +139,24 @@
 		);
 
 		// calculate party details
-		const myChildrenCount = formValues.familyMembers.filter(
-			(m) => m.ageGroup === 'child'
-		).length;
-		const myAdultsCount = formValues.familyMembers.length - myChildrenCount + 1;
-		let childrenCount = formValues.additionalChildren || 0;
-		let adultsCount = formValues.additionalAdults || 0;
+		let myChildrenCount = 0;
+		let myAdultsCount = 1;
+		if (formValues.payingFor === 'family') {
+			const family = formValues.familyMembers;
+			myChildrenCount += family.filter((m) => m.ageGroup === 'child').length;
+			myAdultsCount += family.length - myChildrenCount;
+		}
+
+		let childrenCount = 0;
+		let adultsCount = 0;
+		if (formValues.sharingWith === 'friends') {
+			const friends = formValues.bunkmates;
+			childrenCount += friends.filter((m) => m.ageGroup === 'child').length;
+			adultsCount += friends.length - childrenCount;
+		}
+
 		const bunkmates = adultsCount + childrenCount > 0;
+		const familyCount = myChildrenCount + myAdultsCount;
 		adultsCount += myAdultsCount;
 		childrenCount += myChildrenCount;
 
@@ -208,10 +223,7 @@
 
 		formValues.costs.accommodationTotal = accommodationCosts!.total.total;
 		formValues.costs.accommodationSplit = accommodationCosts!.split.total;
-		formValues.costs.sharedTotal =
-			((RATES.nightly.lakesideHall * 2) / EXPECTED_PARTICIPANTS +
-				SATURDAY_DINNER_RATE) *
-			(formValues.familyMembers.length + 1);
+		formValues.costs.sharedTotal = SATURDAY_DINNER_RATE * familyCount;
 		formValues.costs.grandTotal =
 			formValues.costs.accommodationSplit + formValues.costs.sharedTotal;
 	}

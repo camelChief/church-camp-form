@@ -1,8 +1,8 @@
 <script lang="ts">
-	import FormCard from "$lib/components/FormCard.svelte";
-	import type { CardProps } from "$lib/types";
-	import { ReceiptText } from "@lucide/svelte";
-	import CostBreakdownModal from "../(modals)/CostBreakdownModal.svelte";
+	import FormCard from '$lib/components/FormCard.svelte';
+	import type { CardProps } from '$lib/types';
+	import { ReceiptText } from '@lucide/svelte';
+	import CostBreakdownModal from '../(modals)/CostBreakdownModal.svelte';
 
 	let {
 		formValues = $bindable(),
@@ -28,7 +28,7 @@
 >
 	<p>
 		The total cost for the weekend for
-		{formValues.familyMembers.length ? "your family" : "you"} is
+		{formValues.payingFor === 'family' ? 'your family' : 'you'} is
 		<strong>${formValues.costs.grandTotal}</strong>.
 		<button onclick={() => costBreakdownModal.showModal()} class="link label">
 			How'd we arrive at that figure?
@@ -42,7 +42,7 @@
 	</p>
 
 	<p>
-		{#if formValues.preferredAccommodationType !== "Powered Site"}
+		{#if formValues.preferredAccommodationType !== 'Powered Site'}
 			Once everything is booked, we'll let you know what cabin/room number
 			you'll be in.
 		{/if}

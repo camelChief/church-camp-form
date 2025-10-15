@@ -1,13 +1,13 @@
 <script lang="ts">
-	import FormCard from "$lib/components/FormCard.svelte";
+	import FormCard from '$lib/components/FormCard.svelte';
 	import {
 		ACCOMMODATION_TYPES,
 		ARRIVAL_TIMES,
 		DEPARTURE_TIMES,
-	} from "$lib/consts";
-	import type { CardProps, FormControl } from "$lib/types";
-	import { required } from "$lib/validators";
-	import { Tent } from "@lucide/svelte";
+	} from '$lib/consts';
+	import type { CardProps, FormControl } from '$lib/types';
+	import { required } from '$lib/validators';
+	import { Tent } from '@lucide/svelte';
 
 	let {
 		formValues = $bindable(),
@@ -19,11 +19,15 @@
 		onnext,
 	}: CardProps = $props();
 
-	const bunkmates = $derived(
-		(formValues.additionalAdults || 0) + (formValues.additionalChildren || 0),
+	const bunkmatesCount = $derived(
+		formValues.sharingWith === 'friends' ? formValues.bunkmates.length : 0
 	);
 
-	const partySize = $derived(formValues.familyMembers.length + 1 + bunkmates);
+	const familyCount = $derived(
+		formValues.payingFor === 'family' ? formValues.familyMembers.length : 0
+	);
+
+	const partySize = $derived(1 + familyCount + bunkmatesCount);
 
 	const accommodationOptionsHidden = $derived.by(() => {
 		const roomSizes = ACCOMMODATION_TYPES.map((t) => t.sleeps);
@@ -31,9 +35,9 @@
 	});
 
 	const formControls: { [id: string]: FormControl } = $state({
-		"accommodation-type": {
+		'accommodation-type': {
 			field: null,
-			type: "select",
+			type: 'select',
 			validators: [required],
 		},
 	});
@@ -55,17 +59,10 @@
         <li><strong>Lakeside Cabin</strong> - private kitchen, bathroom + living space, sleeps 7</li>
         <li><strong>Family Room</strong> - private kitchenette, bathroom + living space, sleeps 13</li>
     </ul> -->
-	<p>
+	<p class="mb-2">
 		Fill out the fields below to select your accommodation preference and
 		receive a cost estimate for your accommodation. Final costs will be provided
 		at the end of the form.
-	</p>
-
-	<p class="mb-2">
-		Camp Elim prices their accommodation based on the number of adults and
-		children sharing a room, hence the need to provide these numbers to
-		calculate your cost. The more bunkmates you have, the cheaper your
-		accommodation will be!
 	</p>
 
 	<div class="flex flex-col gap-1">
@@ -101,53 +98,11 @@
 	</div>
 
 	<div class="flex flex-col gap-1">
-		<p class="label whitespace-normal">
-			{formValues.familyMembers.length ? "We" : "I"}
-			will be bunking with...
-		</p>
-
-		<div class="flex gap-2">
-			<label class="input">
-				<input
-					type="text"
-					id="adults-count"
-					bind:value={
-						() => formValues.additionalAdults?.toString() || "",
-						(v) => (formValues.additionalAdults = v ? +v : null)
-					}
-					oninput={() => calculateCosts!()}
-				/>
-				<span class="label">adults</span>
-			</label>
-
-			<label class="input">
-				<input
-					type="text"
-					id="children-count"
-					bind:value={
-						() => formValues.additionalChildren?.toString() || "",
-						(v) => (formValues.additionalChildren = v ? +v : null)
-					}
-					oninput={() => calculateCosts!()}
-				/>
-				<span class="label">children</span>
-			</label>
-		</div>
-
-		<p class="label whitespace-normal">
-			Any additional families or individuals who will be sharing your
-			accommodation with you. Exclude yourself
-			{formValues.familyMembers.length ? "and your family" : ""}
-			from the count.
-		</p>
-	</div>
-
-	<div class="flex flex-col gap-1">
 		<label for="accommodation-type" class="label">Accommodation Type</label>
 
 		<select
 			id="accommodation-type"
-			bind:this={formControls["accommodation-type"].field}
+			bind:this={formControls['accommodation-type'].field}
 			bind:value={formValues.preferredAccommodationType}
 			onchange={() => calculateCosts!()}
 			class="select"
@@ -172,7 +127,7 @@
 			The total cost of accommodation will be
 			<strong>${accommodationCosts!.total.total}</strong>. (${accommodationCosts!
 				.total.nightly.total}/night)
-			{#if bunkmates > 0}
+			{#if bunkmatesCount > 0}
 				<br />Your share of that cost will be
 				<strong>${accommodationCosts!.split.total}</strong>. (${accommodationCosts!
 					.split.nightly.total}/night)

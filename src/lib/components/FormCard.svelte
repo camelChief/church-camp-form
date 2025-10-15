@@ -118,7 +118,9 @@
 							r.addEventListener(
 								'change',
 								() =>
-									radioEls.forEach((r) => r.classList.remove('radio-error')),
+									radioEls.forEach((r) => {
+										r.classList.remove('radio-error');
+									}),
 								{ signal: controller.signal }
 							)
 						);

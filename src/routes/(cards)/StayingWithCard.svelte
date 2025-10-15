@@ -3,10 +3,11 @@
 	import { PAYING_FOR_OPTIONS, SHARING_WITH_OPTIONS } from '$lib/consts';
 	import type { CardProps, FormControl } from '$lib/types';
 	import { required } from '$lib/validators';
-	import { Bed } from '@lucide/svelte';
+	import { Bed, BookOpenCheck } from '@lucide/svelte';
 
 	let {
 		formValues = $bindable(),
+		calculateCosts,
 		active,
 		visited,
 		onback,
@@ -72,6 +73,7 @@
 					id={option.value}
 					name="paying-for"
 					bind:group={formValues.payingFor}
+					onchange={() => calculateCosts!()}
 					value={option.value}
 					class="radio"
 				/>
@@ -101,6 +103,7 @@
 					id={option.value}
 					name="sharing-with"
 					bind:group={formValues.sharingWith}
+					onchange={() => calculateCosts!()}
 					value={option.value}
 					class="radio"
 				/>

@@ -66,11 +66,12 @@ export interface FormValues {
 	mobileNumber: string;
 	payingFor: PayingFor | '';
 	sharingWith: SharingWith | '';
-	familyMembers: FamilyMember[];
+	familyMembers: Bunkmate[];
+	bunkmates: Bunkmate[];
 	arrivalTime: ArrivalTime;
 	departureTime: DepartureTime;
-	additionalAdults: number | null;
-	additionalChildren: number | null;
+	// additionalAdults: number | null;
+	// additionalChildren: number | null;
 	preferredAccommodationType: AccommodationType | '';
 	costs: {
 		accommodationTotal: number;
@@ -87,6 +88,11 @@ export interface Option<T> {
 	label: string;
 }
 
+interface Bunkmate {
+	name: string;
+	ageGroup: 'adult' | 'child';
+}
+
 interface CostBreakdown {
 	nightly: {
 		room: number;
@@ -95,9 +101,4 @@ interface CostBreakdown {
 		total: number; // total per night
 	};
 	total: number; // total for stay
-}
-
-interface FamilyMember {
-	name: string;
-	ageGroup: 'adult' | 'child';
 }
