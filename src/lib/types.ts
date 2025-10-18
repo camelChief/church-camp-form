@@ -10,10 +10,12 @@ export type AccommodationType =
 export type ArrivalTime =
 	| 'Friday Evening'
 	| 'Saturday Morning'
-	| 'Saturday Afternoon';
+	| 'Saturday Afternoon (Before Dinner)'
+	| 'Saturday Evening (After Dinner)';
 
 export type DepartureTime =
-	| 'Saturday Afternoon'
+	| 'Saturday Afternoon (Before Dinner)'
+	| 'Saturday Evening (After Dinner)'
 	| 'Sunday Morning'
 	| 'Sunday Afternoon';
 
@@ -24,7 +26,6 @@ export type Validator = (value: string) => string | null;
 export type SharingWith = 'nobody' | 'friends' | 'anyone';
 
 export interface AccommodationCosts {
-	nights: number;
 	additionalAdults: number;
 	additionalChildren: number;
 	total: CostBreakdown;
@@ -48,7 +49,12 @@ export interface CardProps extends BaseCardProps {
 }
 
 export interface FormControl {
-	field: HTMLInputElement | HTMLSelectElement | HTMLDivElement | null;
+	field:
+		| HTMLInputElement
+		| HTMLSelectElement
+		| HTMLLabelElement
+		| HTMLDivElement
+		| null;
 	type: 'input' | 'select' | 'radio';
 	validators: Validator[];
 	valid?: boolean;
@@ -70,6 +76,8 @@ export interface FormValues {
 	bunkmates: Bunkmate[];
 	arrivalTime: ArrivalTime;
 	departureTime: DepartureTime;
+	stayingNights: number;
+	sharingDinner: boolean;
 	preferredAccommodationType: AccommodationType | '';
 	costs: {
 		accommodationTotal: number;

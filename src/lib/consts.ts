@@ -29,11 +29,13 @@ export const ACCOMMODATION_TYPES: {
 export const ARRIVAL_TIMES: ArrivalTime[] = [
 	'Friday Evening',
 	'Saturday Morning',
-	'Saturday Afternoon',
+	'Saturday Afternoon (Before Dinner)',
+	'Saturday Evening (After Dinner)',
 ];
 
 export const DEPARTURE_TIMES: DepartureTime[] = [
-	'Saturday Afternoon',
+	'Saturday Afternoon (Before Dinner)',
+	'Saturday Evening (After Dinner)',
 	'Sunday Morning',
 	'Sunday Afternoon',
 ];

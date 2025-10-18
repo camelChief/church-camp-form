@@ -34,7 +34,7 @@
 		return partySize > Math.min(...roomSizes);
 	});
 
-	let dayTrip = $derived(accommodationCosts?.nights === 0);
+	let dayTrip = $derived(formValues.stayingNights === 0);
 
 	$effect(() => {
 		if (dayTrip) {

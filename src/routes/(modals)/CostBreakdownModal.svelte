@@ -29,7 +29,7 @@
 
 	// const lakesideHallTotal = $derived(lakesideHallRate * familySize);
 	const saturdayDinnerTotal = $derived(
-		SATURDAY_DINNER_RATE * (accommodationCosts.nights ? familySize : 0)
+		SATURDAY_DINNER_RATE * (formValues.sharingDinner ? familySize : 0)
 	);
 
 	const toCost = (cost: number): string => (cost ? `$${cost}` : '-');
@@ -119,8 +119,8 @@
 					</tr>
 					<tr>
 						<th colspan="3"
-							>Total ({accommodationCosts!.nights} Night{accommodationCosts!
-								.nights !== 1
+							>Total ({formValues.stayingNights} Night{formValues.stayingNights !==
+							1
 								? 's'
 								: ''})</th
 						>
@@ -152,18 +152,18 @@
 					<tr>
 						<td>Saturday Dinner</td>
 						<td>{toCost(SATURDAY_DINNER_RATE)}</td>
-						<td>{accommodationCosts.nights ? familySize : '-'}</td>
+						<td>{formValues.sharingDinner ? familySize : '-'}</td>
 						{#if bunkmates}<td></td>{/if}
 						<td class="bg-primary/5">
 							{toCost(saturdayDinnerTotal)}
 						</td>
 					</tr>
-					<tr>
+					<!-- <tr>
 						<th colspan={bunkmates ? 4 : 3}>Total</th>
 						<th class="bg-primary/5 border border-primary">
 							${formValues.costs.sharedTotal}
 						</th>
-					</tr>
+					</tr> -->
 					<tr>
 						<th colspan={bunkmates ? 4 : 3}>Grand Total</th>
 						<th class="bg-primary border border-primary text-primary-content">
