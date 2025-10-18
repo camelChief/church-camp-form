@@ -52,6 +52,7 @@
 			);
 		}
 
+		let field: HTMLSelectElement;
 		let value: string;
 		let errorClass: string;
 		switch (control.type) {
@@ -60,7 +61,9 @@
 				errorClass = 'input-error';
 				break;
 			case 'select':
-				value = (control.field! as HTMLSelectElement).value;
+				field = control.field! as HTMLSelectElement;
+				if (field.disabled) return null;
+				value = field.value;
 				errorClass = 'select-error';
 				break;
 			case 'radio':

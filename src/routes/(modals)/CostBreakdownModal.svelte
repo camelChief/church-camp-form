@@ -23,12 +23,14 @@
 		formValues.payingFor === 'family' ? formValues.familyMembers.length + 1 : 1
 	);
 
-	const lakesideHallRate = $derived(
-		(RATES.nightly.lakesideHall * 2) / EXPECTED_PARTICIPANTS
-	);
+	// const lakesideHallRate = $derived(
+	// 	(RATES.nightly.lakesideHall * 2) / EXPECTED_PARTICIPANTS
+	// );
 
 	// const lakesideHallTotal = $derived(lakesideHallRate * familySize);
-	const saturdayDinnerTotal = $derived(SATURDAY_DINNER_RATE * familySize);
+	const saturdayDinnerTotal = $derived(
+		SATURDAY_DINNER_RATE * (accommodationCosts.nights ? familySize : 0)
+	);
 
 	const toCost = (cost: number): string => (cost ? `$${cost}` : '-');
 </script>
@@ -70,9 +72,9 @@
 						</td>
 					</tr>
 					<tr>
-						<td>{formValues.preferredAccommodationType}</td>
+						<td>{formValues.preferredAccommodationType || 'None'}</td>
 						<td>{toCost(totalCosts.nightly.room)}</td>
-						<td>1</td>
+						<td>{formValues.preferredAccommodationType ? 1 : '-'}</td>
 						<td class={{ 'bg-primary/5': !bunkmates }}
 							>{toCost(totalCosts.nightly.room)}</td
 						>
@@ -123,11 +125,11 @@
 								: ''})</th
 						>
 						<th class={{ 'bg-primary/5 border border-primary': !bunkmates }}
-							>{toCost(totalCosts.total)}</th
+							>${totalCosts.total}</th
 						>
 						{#if bunkmates}
 							<th class="bg-primary/5 border border-primary"
-								>{toCost(myTotalCosts.total)}</th
+								>${myTotalCosts.total}</th
 							>
 						{/if}
 					</tr>
@@ -150,7 +152,7 @@
 					<tr>
 						<td>Saturday Dinner</td>
 						<td>{toCost(SATURDAY_DINNER_RATE)}</td>
-						<td>{familySize}</td>
+						<td>{accommodationCosts.nights ? familySize : '-'}</td>
 						{#if bunkmates}<td></td>{/if}
 						<td class="bg-primary/5">
 							{toCost(saturdayDinnerTotal)}
@@ -159,13 +161,13 @@
 					<tr>
 						<th colspan={bunkmates ? 4 : 3}>Total</th>
 						<th class="bg-primary/5 border border-primary">
-							{toCost(formValues.costs.sharedTotal)}
+							${formValues.costs.sharedTotal}
 						</th>
 					</tr>
 					<tr>
 						<th colspan={bunkmates ? 4 : 3}>Grand Total</th>
 						<th class="bg-primary border border-primary text-primary-content">
-							{toCost(formValues.costs.grandTotal)}
+							${formValues.costs.grandTotal}
 						</th>
 					</tr>
 				</tbody>

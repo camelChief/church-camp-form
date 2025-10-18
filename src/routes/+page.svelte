@@ -57,7 +57,7 @@
 	});
 
 	let accommodationCosts: AccommodationCosts = $state({
-		nights: 0,
+		nights: 2,
 		additionalAdults: 0,
 		additionalChildren: 0,
 
@@ -123,6 +123,9 @@
 	}
 
 	function calculateCosts(): void {
+		const nightsCount = calculateNights();
+		accommodationCosts!.nights = nightsCount;
+
 		if (!formValues.preferredAccommodationType) {
 			resetCosts();
 			return;
@@ -130,7 +133,6 @@
 
 		// setup
 		// get values to update
-		const nightsCount = calculateNights();
 		const nightlyRates = accommodationCosts!.total.nightly;
 		const myNightlyRates = accommodationCosts!.split.nightly;
 
@@ -181,7 +183,6 @@
 		}
 
 		// nightly additional occupants rates
-		accommodationCosts!.nights = nightsCount;
 		accommodationCosts!.additionalAdults = additionalAdultsCount;
 		accommodationCosts!.additionalChildren = additionalChildrenCount;
 		nightlyRates.additionalAdults =

@@ -19,22 +19,34 @@
 		onnext,
 	}: CardProps = $props();
 
-	const bunkmatesCount = $derived(
+	let bunkmatesCount = $derived(
 		formValues.sharingWith === 'friends' ? formValues.bunkmates.length : 0
 	);
 
-	const familyCount = $derived(
+	let familyCount = $derived(
 		formValues.payingFor === 'family' ? formValues.familyMembers.length : 0
 	);
 
-	const partySize = $derived(1 + familyCount + bunkmatesCount);
+	let partySize = $derived(1 + familyCount + bunkmatesCount);
 
-	const accommodationOptionsHidden = $derived.by(() => {
+	let accommodationOptionsHidden = $derived.by(() => {
 		const roomSizes = ACCOMMODATION_TYPES.map((t) => t.sleeps);
 		return partySize > Math.min(...roomSizes);
 	});
 
-	const formControls: { [id: string]: FormControl } = $state({
+	let dayTrip = $derived(accommodationCosts?.nights === 0);
+
+	$effect(() => {
+		if (dayTrip) {
+			const field = formControls['accommodation-type']
+				.field as HTMLSelectElement;
+			if (!field) return;
+			field.value = '';
+			formValues.preferredAccommodationType = '';
+		}
+	});
+
+	let formControls: { [id: string]: FormControl } = $state({
 		'accommodation-type': {
 			field: null,
 			type: 'select',
@@ -128,6 +140,7 @@
 			bind:value={formValues.preferredAccommodationType}
 			onchange={() => calculateCosts!()}
 			class="select"
+			disabled={dayTrip}
 		>
 			{#each ACCOMMODATION_TYPES as type}
 				<option value={type.name} disabled={type.sleeps < partySize}>
@@ -138,9 +151,13 @@
 
 		<p
 			class="label whitespace-normal"
-			class:hidden={!accommodationOptionsHidden}
+			class:hidden={!accommodationOptionsHidden && !dayTrip}
 		>
-			Some accommodation types are unavailable due to the size of your party.
+			{#if dayTrip}
+				No need to select accommodation if you're just planning a day trip!
+			{:else}
+				Some accommodation types are unavailable due to the size of your party.
+			{/if}
 		</p>
 	</div>
 
