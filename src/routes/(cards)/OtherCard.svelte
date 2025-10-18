@@ -21,6 +21,10 @@
 			bind:value={formValues.dietaryRequirements}
 			class="input"
 		/>
+		<p class="label whitespace-normal">
+			This applies to the catered meal on Saturday night.<br />
+			All other meals will be self-catered.
+		</p>
 	</div>
 
 	<div class="flex flex-col gap-1">

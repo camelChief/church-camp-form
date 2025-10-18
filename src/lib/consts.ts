@@ -11,9 +11,9 @@ import type {
 } from './types';
 
 export const APPS_SCRIPT_URL =
-	'https://script.google.com/macros/s/AKfycbyYAlLQeySr_9qnwVY9ZNiiIm_Chp-tkZDtTsntnetkUIxlxmxuE9uGwZDF5zV8lQGE1g/exec';
+	'https://script.google.com/macros/s/AKfycbwyoAIdK7wgTLBdEKJDZTGBmlwTWSbkiBcquVPB5Ebg1ZxPNBOuyQkbiHnhPyDHXqTLNQ/exec';
 export const EXPECTED_PARTICIPANTS = 40;
-export const SATURDAY_DINNER_RATE = 5;
+export const SATURDAY_DINNER_RATE = 8;
 
 export const ACCOMMODATION_TYPES: {
 	name: AccommodationType;
@@ -29,11 +29,13 @@ export const ACCOMMODATION_TYPES: {
 export const ARRIVAL_TIMES: ArrivalTime[] = [
 	'Friday Evening',
 	'Saturday Morning',
-	'Saturday Afternoon',
+	'Saturday Afternoon (Before Dinner)',
+	'Saturday Evening (After Dinner)',
 ];
 
 export const DEPARTURE_TIMES: DepartureTime[] = [
-	'Saturday Afternoon',
+	'Saturday Afternoon (Before Dinner)',
+	'Saturday Evening (After Dinner)',
 	'Sunday Morning',
 	'Sunday Afternoon',
 ];

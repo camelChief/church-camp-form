@@ -45,6 +45,8 @@
 		],
 		arrivalTime: 'Friday Evening',
 		departureTime: 'Sunday Afternoon',
+		stayingNights: 2,
+		sharingDinner: true,
 		preferredAccommodationType: '',
 		costs: {
 			accommodationTotal: 0,
@@ -57,7 +59,6 @@
 	});
 
 	let accommodationCosts: AccommodationCosts = $state({
-		nights: 0,
 		additionalAdults: 0,
 		additionalChildren: 0,
 
@@ -123,14 +124,45 @@
 	}
 
 	function calculateCosts(): void {
-		if (!formValues.preferredAccommodationType) {
+		calculateNights();
+
+		if (formValues.preferredAccommodationType) {
+			calculateAccommodationCosts();
+		} else {
 			resetCosts();
-			return;
 		}
 
+		let familyCount = 1;
+		if (formValues.payingFor === 'family') {
+			familyCount += formValues.familyMembers.length;
+		}
+
+		formValues.costs.sharedTotal = formValues.sharingDinner
+			? SATURDAY_DINNER_RATE * familyCount
+			: 0;
+		formValues.costs.grandTotal =
+			formValues.costs.accommodationSplit + formValues.costs.sharedTotal;
+	}
+
+	function calculateNights(): void {
+		const arrivingFriday = formValues.arrivalTime === 'Friday Evening';
+		const departingSunday =
+			formValues.departureTime === 'Sunday Morning' ||
+			formValues.departureTime === 'Sunday Afternoon';
+
+		let nightsCount = 0;
+		if (arrivingFriday) nightsCount += 1;
+		if (departingSunday) nightsCount += 1;
+		formValues.stayingNights = nightsCount;
+
+		formValues.sharingDinner =
+			formValues.arrivalTime !== 'Saturday Evening (After Dinner)' &&
+			formValues.departureTime !== 'Saturday Afternoon (Before Dinner)';
+	}
+
+	function calculateAccommodationCosts(): void {
 		// setup
 		// get values to update
-		const nightsCount = calculateNights();
 		const nightlyRates = accommodationCosts!.total.nightly;
 		const myNightlyRates = accommodationCosts!.split.nightly;
 
@@ -157,7 +189,6 @@
 		}
 
 		const bunkmates = adultsCount + childrenCount > 0;
-		const familyCount = myChildrenCount + myAdultsCount;
 		adultsCount += myAdultsCount;
 		childrenCount += myChildrenCount;
 
@@ -181,7 +212,6 @@
 		}
 
 		// nightly additional occupants rates
-		accommodationCosts!.nights = nightsCount;
 		accommodationCosts!.additionalAdults = additionalAdultsCount;
 		accommodationCosts!.additionalChildren = additionalChildrenCount;
 		nightlyRates.additionalAdults =
@@ -219,14 +249,13 @@
 			myNightlyRates.additionalChildren;
 
 		// total costs
-		accommodationCosts!.total.total = nightlyRates.total * nightsCount;
-		accommodationCosts!.split.total = myNightlyRates.total * nightsCount;
+		accommodationCosts!.total.total =
+			nightlyRates.total * formValues.stayingNights;
+		accommodationCosts!.split.total =
+			myNightlyRates.total * formValues.stayingNights;
 
 		formValues.costs.accommodationTotal = accommodationCosts!.total.total;
 		formValues.costs.accommodationSplit = accommodationCosts!.split.total;
-		formValues.costs.sharedTotal = SATURDAY_DINNER_RATE * familyCount;
-		formValues.costs.grandTotal =
-			formValues.costs.accommodationSplit + formValues.costs.sharedTotal;
 	}
 
 	function resetCosts(): void {
@@ -249,18 +278,6 @@
 			},
 			total: 0,
 		};
-	}
-
-	function calculateNights(): number {
-		const arrivingFriday = formValues.arrivalTime === 'Friday Evening';
-		const departingSunday =
-			formValues.departureTime === 'Sunday Morning' ||
-			formValues.departureTime === 'Sunday Afternoon';
-
-		let nightsCount = 0;
-		if (arrivingFriday) nightsCount += 1;
-		if (departingSunday) nightsCount += 1;
-		return nightsCount;
 	}
 </script>
 
