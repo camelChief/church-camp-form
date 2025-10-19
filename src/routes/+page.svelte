@@ -18,6 +18,7 @@
 	import StayingWithCard from './(cards)/StayingWithCard.svelte';
 	import SummaryCard from './(cards)/SummaryCard.svelte';
 	import WelcomeCard from './(cards)/WelcomeCard.svelte';
+	import { showToast } from '$lib/services/toasts.svelte';
 
 	let formState: FormState = $state({
 		stepIndex: 0,
@@ -108,6 +109,12 @@
 	const onnext = () => goToStep(formState.stepIndex + 1);
 	const onsubmit = async () => {
 		formState.isLoading = true;
+
+		showToast({
+			message: 'Submitting - please wait just a moment.',
+			type: 'info',
+		});
+
 		await fetch(APPS_SCRIPT_URL, {
 			redirect: 'follow',
 			method: 'POST',

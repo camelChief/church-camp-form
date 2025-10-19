@@ -8,7 +8,7 @@
 			role="alert"
 			class={{
 				alert: true,
-				'alert-info': !toast.type || toast.type === 'info',
+				'alert-info': toast.type === 'info',
 				'alert-success': toast.type === 'success',
 				'alert-warning': toast.type === 'warning',
 				'alert-error': toast.type === 'error',

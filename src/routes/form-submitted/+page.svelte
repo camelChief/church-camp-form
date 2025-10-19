@@ -1,10 +1,17 @@
+<script lang="ts">
+	import { TentTree } from '@lucide/svelte';
+</script>
+
 <div class="flex items-center justify-center h-screen w-screen fixed z-2">
 	<div class="flex flex-col gap-4 items-center p-4 backdrop-blur-xs">
-		<p class="text-center mt-8">
-			Form submitted.<br />
+		<TentTree size={128} />
+		<h1 class="text-3xl font-bold mt-8">Form Submitted</h1>
+		<p class="text-center">
+			Thank you for taking the time, your response has been successfully
+			submitted!<br />
 			Expect an email with extra details shortly.
 		</p>
-		<p>Can't wait to join you at camp!</p>
+		<p>(you can close this tab now)</p>
 	</div>
 </div>
 
