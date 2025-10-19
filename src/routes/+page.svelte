@@ -55,6 +55,8 @@
 			grandTotal: 0,
 		},
 		dietaryRequirements: '',
+		offeringLift: false,
+		acceptingLift: false,
 		notes: '',
 	});
 

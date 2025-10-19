@@ -86,6 +86,8 @@ export interface FormValues {
 		grandTotal: number;
 	};
 	dietaryRequirements: string;
+	offeringLift: boolean;
+	acceptingLift: boolean;
 	notes: string;
 }
 

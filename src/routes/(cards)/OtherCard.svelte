@@ -27,6 +27,32 @@
 		</p>
 	</div>
 
+	<div class="flex flex-col gap-2 mb-2">
+		<p class="label">Carpooling</p>
+
+		<div class="flex gap-2">
+			<input
+				type="checkbox"
+				id="offering-lift"
+				bind:checked={formValues.offeringLift}
+				onchange={() => (formValues.acceptingLift = false)}
+				class="checkbox"
+			/>
+			<label for="offering-lift">I'm happy to offer a lift</label>
+		</div>
+
+		<div class="flex gap-2">
+			<input
+				type="checkbox"
+				id="accepting-lift"
+				bind:checked={formValues.acceptingLift}
+				onchange={() => (formValues.offeringLift = false)}
+				class="checkbox"
+			/>
+			<label for="accepting-lift">I need a lift</label>
+		</div>
+	</div>
+
 	<div class="flex flex-col gap-1">
 		<label for="notes" class="label">Anything else you'd like us to know?</label
 		>
