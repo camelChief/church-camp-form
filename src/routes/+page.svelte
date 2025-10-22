@@ -8,7 +8,12 @@
 		RATES,
 		SATURDAY_DINNER_RATE,
 	} from '$lib/consts';
-	import type { AccommodationCosts, FormState, FormValues } from '$lib/types';
+	import type {
+		AccommodationCosts,
+		DayTripCosts,
+		FormState,
+		FormValues,
+	} from '$lib/types';
 	import { tick } from 'svelte';
 	import AccommodationCard from './(cards)/AccommodationCard.svelte';
 	import BunkmatesDetailsCard from './(cards)/BunkmatesDetailsCard.svelte';
@@ -52,12 +57,15 @@
 		costs: {
 			accommodationTotal: 0,
 			accommodationSplit: 0,
+			dayTripTotal: 0,
 			sharedTotal: 0,
 			grandTotal: 0,
 		},
-		dietaryRequirements: '',
+		offeringFinancialAssistance: false,
+		acceptingFinancialAssistance: false,
 		offeringLift: false,
 		acceptingLift: false,
+		dietaryRequirements: '',
 		notes: '',
 	});
 
@@ -86,6 +94,14 @@
 
 			total: 0,
 		},
+	});
+
+	let dayTripCosts: DayTripCosts = $state({
+		individualsCount: 0,
+		individualsCost: 0,
+		familiesCount: 0,
+		familiesCost: 0,
+		total: 0,
 	});
 
 	let steps = $derived.by(() => {
@@ -135,10 +151,11 @@
 	function calculateCosts(): void {
 		calculateNights();
 
+		resetCosts();
 		if (formValues.preferredAccommodationType) {
 			calculateAccommodationCosts();
 		} else {
-			resetCosts();
+			calculateDayTripCosts();
 		}
 
 		let familyCount = 1;
@@ -149,8 +166,11 @@
 		formValues.costs.sharedTotal = formValues.sharingDinner
 			? SATURDAY_DINNER_RATE * familyCount
 			: 0;
+
 		formValues.costs.grandTotal =
-			formValues.costs.accommodationSplit + formValues.costs.sharedTotal;
+			formValues.costs.accommodationSplit +
+			formValues.costs.dayTripTotal +
+			formValues.costs.sharedTotal;
 	}
 
 	function calculateNights(): void {
@@ -172,8 +192,8 @@
 	function calculateAccommodationCosts(): void {
 		// setup
 		// get values to update
-		const nightlyRates = accommodationCosts!.total.nightly;
-		const myNightlyRates = accommodationCosts!.split.nightly;
+		const nightlyRates = accommodationCosts.total.nightly;
+		const myNightlyRates = accommodationCosts.split.nightly;
 
 		// get accommodation details
 		const accommodation = ACCOMMODATION_TYPES.find(
@@ -221,8 +241,8 @@
 		}
 
 		// nightly additional occupants rates
-		accommodationCosts!.additionalAdults = additionalAdultsCount;
-		accommodationCosts!.additionalChildren = additionalChildrenCount;
+		accommodationCosts.additionalAdults = additionalAdultsCount;
+		accommodationCosts.additionalChildren = additionalChildrenCount;
 		nightlyRates.additionalAdults =
 			additionalAdultsCount * RATES.nightly.additionalAdult;
 		nightlyRates.additionalChildren =
@@ -258,17 +278,45 @@
 			myNightlyRates.additionalChildren;
 
 		// total costs
-		accommodationCosts!.total.total =
+		accommodationCosts.total.total =
 			nightlyRates.total * formValues.stayingNights;
-		accommodationCosts!.split.total =
+		accommodationCosts.split.total =
 			myNightlyRates.total * formValues.stayingNights;
 
 		formValues.costs.accommodationTotal = accommodationCosts!.total.total;
 		formValues.costs.accommodationSplit = accommodationCosts!.split.total;
 	}
 
+	function calculateDayTripCosts(): void {
+		const family = formValues.familyMembers;
+		const familyCount = family.length + 1;
+		const childrenCount = family.filter((m) => m.ageGroup === 'child').length;
+		const adultsCount = familyCount - childrenCount;
+
+		if (familyCount < 3 || childrenCount === 0) {
+			dayTripCosts.individualsCount = familyCount;
+			dayTripCosts.individualsCost = familyCount * RATES.daily.individual;
+			dayTripCosts.total = familyCount * RATES.daily.individual;
+			formValues.costs.dayTripTotal = familyCount * RATES.daily.individual;
+		} else {
+			let additionalCost = 0;
+			const additionalAdults = adultsCount - 2;
+			if (additionalAdults >= 1) {
+				additionalCost = additionalAdults * RATES.daily.individual;
+			}
+
+			dayTripCosts.individualsCount =
+				additionalAdults >= 1 ? additionalAdults : 0;
+			dayTripCosts.individualsCost = additionalCost;
+			dayTripCosts.familiesCount = 1;
+			dayTripCosts.familiesCost = RATES.daily.family;
+			dayTripCosts.total = RATES.daily.family + additionalCost;
+			formValues.costs.dayTripTotal = RATES.daily.family + additionalCost;
+		}
+	}
+
 	function resetCosts(): void {
-		accommodationCosts!.total = {
+		accommodationCosts.total = {
 			nightly: {
 				room: 0,
 				additionalAdults: 0,
@@ -278,7 +326,7 @@
 			total: 0,
 		};
 
-		accommodationCosts!.split = {
+		accommodationCosts.split = {
 			nightly: {
 				room: 0,
 				additionalAdults: 0,
@@ -286,6 +334,22 @@
 				total: 0,
 			},
 			total: 0,
+		};
+
+		dayTripCosts = {
+			individualsCount: 0,
+			individualsCost: 0,
+			familiesCount: 0,
+			familiesCost: 0,
+			total: 0,
+		};
+
+		formValues.costs = {
+			accommodationTotal: 0,
+			accommodationSplit: 0,
+			dayTripTotal: 0,
+			sharedTotal: 0,
+			grandTotal: 0,
 		};
 	}
 </script>
@@ -296,6 +360,7 @@
 			bind:formValues
 			{formState}
 			{accommodationCosts}
+			{dayTripCosts}
 			{calculateCosts}
 			active={i === formState.stepIndex}
 			visited={i < formState.stepIndex}

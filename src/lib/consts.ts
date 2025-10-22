@@ -11,7 +11,7 @@ import type {
 } from './types';
 
 export const APPS_SCRIPT_URL =
-	'https://script.google.com/macros/s/AKfycbyJ99HCHn7VY2zpWth99Hd2RnRTRUyuoQxCn_XXVdxxPEKp4YMVuvTtRRKURI9pEl_llw/exec';
+	'https://script.google.com/macros/s/AKfycbwAZ1CZPwcBU49lr3Yn_3SRVm1kO7LCztA8jCUKnHHaqa9OPl5wGZ8n0q3Fse3BLocR-Q/exec';
 export const EXPECTED_PARTICIPANTS = 40;
 export const SATURDAY_DINNER_RATE = 8;
 

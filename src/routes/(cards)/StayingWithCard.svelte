@@ -64,7 +64,7 @@
 		bind:this={formControls['paying-for'].field}
 		class="flex flex-col gap-2 mb-2"
 	>
-		<p class="label">I am paying for accommodation for...</p>
+		<p class="label">I am paying for accommodation/site use for...</p>
 
 		{#each PAYING_FOR_OPTIONS as option}
 			<div class="flex gap-2">

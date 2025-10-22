@@ -8,6 +8,7 @@
 		formValues = $bindable(),
 		formState,
 		accommodationCosts,
+		dayTripCosts,
 		active,
 		visited,
 		onback,
@@ -65,5 +66,9 @@
 		Can't wait to see you there!
 	</p>
 
-	<CostBreakdownModal {formValues} accommodationCosts={accommodationCosts!} />
+	<CostBreakdownModal
+		{formValues}
+		accommodationCosts={accommodationCosts!}
+		dayTripCosts={dayTripCosts!}
+	/>
 </FormCard>

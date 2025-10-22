@@ -45,7 +45,16 @@ export interface CardProps extends BaseCardProps {
 	formValues: FormValues;
 	formState?: FormState;
 	accommodationCosts?: AccommodationCosts;
+	dayTripCosts?: DayTripCosts;
 	calculateCosts?: () => void;
+}
+
+export interface DayTripCosts {
+	individualsCount: number;
+	individualsCost: number;
+	familiesCount: number;
+	familiesCost: number;
+	total: number;
 }
 
 export interface FormControl {
@@ -82,12 +91,15 @@ export interface FormValues {
 	costs: {
 		accommodationTotal: number;
 		accommodationSplit: number;
+		dayTripTotal: number;
 		sharedTotal: number;
 		grandTotal: number;
 	};
-	dietaryRequirements: string;
+	offeringFinancialAssistance: boolean;
+	acceptingFinancialAssistance: boolean;
 	offeringLift: boolean;
 	acceptingLift: boolean;
+	dietaryRequirements: string;
 	notes: string;
 }
 

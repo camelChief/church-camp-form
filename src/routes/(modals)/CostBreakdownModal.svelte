@@ -4,15 +4,21 @@
 		RATES,
 		SATURDAY_DINNER_RATE,
 	} from '$lib/consts';
-	import type { AccommodationCosts, FormValues } from '$lib/types';
+	import type {
+		AccommodationCosts,
+		DayTripCosts,
+		FormValues,
+	} from '$lib/types';
 	import { X } from '@lucide/svelte';
 
 	let {
 		formValues,
 		accommodationCosts,
+		dayTripCosts,
 	}: {
 		formValues: FormValues;
 		accommodationCosts: AccommodationCosts;
+		dayTripCosts: DayTripCosts;
 	} = $props();
 
 	const totalCosts = $derived(accommodationCosts!.total);
@@ -64,75 +70,103 @@
 					</tr>
 					<tr class="bg-base-200">
 						<td colspan={bunkmates ? 5 : 4}>
-							<strong>Accommodation</strong><br />
+							<strong>Accommodation / Site Use</strong><br />
 							{#if bunkmates}
 								Subtotal is calculated based on all occupants and is then split
 								into individual shares. You only need to pay your share.
 							{/if}
 						</td>
 					</tr>
-					<tr>
-						<td>{formValues.preferredAccommodationType || 'None'}</td>
-						<td>{toCost(totalCosts.nightly.room)}</td>
-						<td>{formValues.preferredAccommodationType ? 1 : '-'}</td>
-						<td class={{ 'bg-primary/5': !bunkmates }}
-							>{toCost(totalCosts.nightly.room)}</td
-						>
-						{#if bunkmates}
-							<td class="bg-primary/5">{toCost(myTotalCosts.nightly.room)}</td>
-						{/if}
-					</tr>
-					<tr>
-						<td>Extra Adult</td>
-						<td>{toCost(RATES.nightly.additionalAdult)}</td>
-						<td>{accommodationCosts!.additionalAdults || '-'}</td>
-						<td class={{ 'bg-primary/5': !bunkmates }}
-							>{toCost(totalCosts.nightly.additionalAdults)}</td
-						>
-						{#if bunkmates}
-							<td class="bg-primary/5"
-								>{toCost(myTotalCosts.nightly.additionalAdults)}</td
+					{#if formValues.stayingNights > 0}
+						<tr>
+							<td>{formValues.preferredAccommodationType}</td>
+							<td>{toCost(totalCosts.nightly.room)}</td>
+							<td>{formValues.preferredAccommodationType ? 1 : '-'}</td>
+							<td class={{ 'bg-primary/5': !bunkmates }}
+								>{toCost(totalCosts.nightly.room)}</td
 							>
-						{/if}
-					</tr>
-					<tr>
-						<td>Extra Child</td>
-						<td>{toCost(RATES.nightly.additionalChild)}</td>
-						<td>{accommodationCosts!.additionalChildren || '-'}</td>
-						<td class={{ 'bg-primary/5': !bunkmates }}
-							>{toCost(totalCosts.nightly.additionalChildren)}</td
-						>
-						{#if bunkmates}
-							<td class="bg-primary/5"
-								>{toCost(myTotalCosts.nightly.additionalChildren)}</td
+							{#if bunkmates}
+								<td class="bg-primary/5">{toCost(myTotalCosts.nightly.room)}</td
+								>
+							{/if}
+						</tr>
+						<tr>
+							<td>Extra Adult</td>
+							<td>{toCost(RATES.nightly.additionalAdult)}</td>
+							<td>{accommodationCosts!.additionalAdults || '-'}</td>
+							<td class={{ 'bg-primary/5': !bunkmates }}
+								>{toCost(totalCosts.nightly.additionalAdults)}</td
 							>
-						{/if}
-					</tr>
-					<tr>
-						<th colspan="3">Per Night</th>
-						<th class={{ 'bg-primary/5': !bunkmates }}
-							>{toCost(totalCosts.nightly.total)}</th
-						>
-						{#if bunkmates}
-							<th class="bg-primary/5">{toCost(myTotalCosts.nightly.total)}</th>
-						{/if}
-					</tr>
-					<tr>
-						<th colspan="3"
-							>Total ({formValues.stayingNights} Night{formValues.stayingNights !==
-							1
-								? 's'
-								: ''})</th
-						>
-						<th class={{ 'bg-primary/5 border border-primary': !bunkmates }}
-							>${totalCosts.total}</th
-						>
-						{#if bunkmates}
-							<th class="bg-primary/5 border border-primary"
-								>${myTotalCosts.total}</th
+							{#if bunkmates}
+								<td class="bg-primary/5"
+									>{toCost(myTotalCosts.nightly.additionalAdults)}</td
+								>
+							{/if}
+						</tr>
+						<tr>
+							<td>Extra Child</td>
+							<td>{toCost(RATES.nightly.additionalChild)}</td>
+							<td>{accommodationCosts!.additionalChildren || '-'}</td>
+							<td class={{ 'bg-primary/5': !bunkmates }}
+								>{toCost(totalCosts.nightly.additionalChildren)}</td
 							>
-						{/if}
-					</tr>
+							{#if bunkmates}
+								<td class="bg-primary/5"
+									>{toCost(myTotalCosts.nightly.additionalChildren)}</td
+								>
+							{/if}
+						</tr>
+						<tr>
+							<th colspan="3">Per Night</th>
+							<th class={{ 'bg-primary/5': !bunkmates }}
+								>{toCost(totalCosts.nightly.total)}</th
+							>
+							{#if bunkmates}
+								<th class="bg-primary/5"
+									>{toCost(myTotalCosts.nightly.total)}</th
+								>
+							{/if}
+						</tr>
+						<tr>
+							<th colspan="3">
+								Total ({formValues.stayingNights} Night{formValues.stayingNights !==
+								1
+									? 's'
+									: ''})
+							</th>
+							<th class={{ 'bg-primary/5 border border-primary': !bunkmates }}
+								>${totalCosts.total}</th
+							>
+							{#if bunkmates}
+								<th class="bg-primary/5 border border-primary"
+									>${myTotalCosts.total}</th
+								>
+							{/if}
+						</tr>
+					{:else}
+						<tr>
+							<td>Day Trip (individual)</td>
+							<td>{toCost(RATES.daily.individual)}</td>
+							<td>{dayTripCosts.individualsCount || '-'}</td>
+							<td class="bg-primary/5">
+								{toCost(dayTripCosts.individualsCost)}
+							</td>
+						</tr>
+						<tr>
+							<td>Day Trip (family)</td>
+							<td>{toCost(RATES.daily.family)}</td>
+							<td>{dayTripCosts.familiesCount || '-'}</td>
+							<td class="bg-primary/5">
+								{toCost(dayTripCosts.familiesCost)}
+							</td>
+						</tr>
+						<tr>
+							<th colspan="3">Total</th>
+							<th class={{ 'bg-primary/5 border border-primary': !bunkmates }}>
+								${dayTripCosts.total}
+							</th>
+						</tr>
+					{/if}
 					<tr class="bg-base-200">
 						<td colspan={bunkmates ? 5 : 4}>
 							<strong>Shared</strong><br />
