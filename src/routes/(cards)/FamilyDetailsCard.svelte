@@ -49,7 +49,8 @@
 >
 	<p class="mb-2">
 		Add the details for your spouse/family here.<br />
-		Use the + (plus) button below to add family members.
+		Use the + (plus) button below to add family members.<br />
+		<strong>Do not include yourself.</strong>
 	</p>
 
 	<div class="flex flex-col items-end gap-2">
