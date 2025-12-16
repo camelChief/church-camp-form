@@ -19,10 +19,11 @@ export const ACCOMMODATION_TYPES: {
 	name: AccommodationType;
 	rate: number;
 	sleeps: number;
+	disabled?: boolean;
 }[] = [
 	{ name: 'Powered Site', rate: 39, sleeps: 20 },
 	{ name: 'Bunk Room', rate: 72, sleeps: 9 },
-	{ name: 'Lakeside Cabin', rate: 138, sleeps: 7 },
+	{ name: 'Lakeside Cabin', rate: 138, sleeps: 7, disabled: true },
 	{ name: 'Family Room (Unit)', rate: 138, sleeps: 13 },
 ];
 

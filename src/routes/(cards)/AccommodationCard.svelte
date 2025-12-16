@@ -143,7 +143,7 @@
 			disabled={dayTrip}
 		>
 			{#each ACCOMMODATION_TYPES as type}
-				<option value={type.name} disabled={type.sleeps < partySize}>
+				<option value={type.name} disabled={type.disabled || type.sleeps < partySize}>
 					{type.name}
 				</option>
 			{/each}
